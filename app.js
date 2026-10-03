@@ -54,6 +54,8 @@ const CRISE = {
     { label: 'Carte des feux en direct', url: 'https://intentanalytics.fr/feux/carte' },
   ],
   forces: 'Pompiers, aériens, soignants, État, forêt, citoyens — Gironde, juillet 2026.',
+  nomPartage: 'Urgence Entraide Incendie', // préfixe des messages WhatsApp
+  joursAVerifier: 14,                       // au-delà, l'annonce invite à vérifier qu'elle est toujours d'actualité
 };
 
 const STATUTS = {
@@ -336,7 +338,7 @@ const el = (id) => {
   // Sans ce filet, un seul id manquant (ex: cache navigateur obsolète après une
   // mise à jour) casserait TOUS les boutons de la page, pas seulement celui
   // concerné — c'est le bug le plus probable derrière un "plus rien ne marche".
-  console.warn(`[Urgence Entraide Incendie] Élément #${id} introuvable dans la page. Si tu viens de mettre à jour le site, fais un rechargement forcé (Ctrl/Cmd + Maj + R) pour vider le cache du navigateur.`);
+  console.warn(`[Urgence Entraide Incendie] Élément #${id} introuvable dans la page. Si vous venez de mettre à jour le site, faites un rechargement forcé (Ctrl/Cmd + Maj + R) pour vider le cache du navigateur.`);
   return document.createElement('div');
 };
 
@@ -582,7 +584,7 @@ function whatsappMessage(a) {
   const cat = (CATEGORIES[a.categorie] || { label: a.categorie }).label;
   const action = a.type === 'besoin' ? 'Recherche' : 'Offre';
   const link = buildShareLink(a);
-  return `[Urgence Entraide Incendie] ${action} · ${cat}\n${a.description}\n— ${a.contactPrenom}, ${lieuComplet(a)} · 📞 ${a.contactTel}\n👉 ${link}`;
+  return `[${CRISE.nomPartage}] ${action} · ${cat}\n${a.description}\n— ${a.contactPrenom}, ${lieuComplet(a)} · 📞 ${a.contactTel}\n👉 ${link}`;
 }
 function whatsappLink(a) {
   return `https://wa.me/?text=${encodeURIComponent(whatsappMessage(a))}`;
@@ -660,8 +662,9 @@ function filteredExcept(list, exceptDim) {
   });
 }
 
-function facetRow(label, count, active, attrs) {
-  return `<button ${attrs} class="facet-row" data-active="${active}">
+function facetRow(label, count, active, attrs, disableEmpty = false) {
+  const off = disableEmpty && count === 0 && !active ? ' disabled' : '';
+  return `<button ${attrs} class="facet-row" data-active="${active}"${off}>
     <span>${label}</span><span class="facet-count">${count}</span>
   </button>`;
 }
@@ -681,7 +684,7 @@ function renderFacets(all, searchFiltered) {
   facetCat.innerHTML =
     facetRow('Toutes catégories', byCat.length, filterCat === 'all', `data-filter-cat="all"`) +
     Object.entries(CATEGORIES).map(([key, c]) =>
-      facetRow(`${ico(c.svg)}${c.label}`, byCat.filter(a => a.categorie === key).length, filterCat === key, `data-filter-cat="${key}"`)
+      facetRow(`${ico(c.svg)}${c.label}`, byCat.filter(a => a.categorie === key).length, filterCat === key, `data-filter-cat="${key}"`, true)
     ).join('');
 
   // -- Zone (dynamique, construite à partir des communes réellement utilisées) --
@@ -745,6 +748,7 @@ function cardHTML(a) {
   const statutKey = a.statut || 'ouvert';
   const statut = STATUTS[statutKey] || STATUTS.ouvert;
   const off = statutKey !== 'ouvert';
+  const stale = !off && (Date.now() - (a.createdAt || 0)) > CRISE.joursAVerifier * 864e5;
   const mine = getMineIds().has(a.id);
   const telClean = cleanTel(a.contactTel);
   const prenom = escapeHTML(a.contactPrenom);
@@ -775,10 +779,12 @@ function cardHTML(a) {
     </div>
     <p class="ad__desc">${escapeHTML(a.description)}</p>
     <p class="ad__where">${ico('pin')}<span><strong>${escapeHTML(lieuComplet(a))}</strong> · ${prenom}</span></p>
+    ${stale ? `<p class="ad__stale">${ico('info')}<span>Publiée il y a plus de ${CRISE.joursAVerifier} jours : appelez pour vérifier qu'elle est toujours d'actualité.</span></p>` : ''}
     <div class="ad__acts">
       <a href="tel:${telClean}" class="ad__call">${ico('phone')}<span class="ad__callt">Appeler ${prenom}</span></a>
       <a href="${whatsappLink(a)}" target="_blank" rel="noopener" class="ad__share">${ico('share')}<span>Partager</span></a>
       <button data-copy="${escapeHTML(a.contactTel)}" class="btn-copy ad__icon" aria-label="Copier le numéro" title="Copier le numéro">${ico('copy')}</button>
+      <a class="ad__icon ad__report" href="mailto:contact@evoshifting.com?subject=${encodeURIComponent('Signalement annonce ' + a.id)}" aria-label="Signaler cette annonce" title="Signaler cette annonce">${ico('flag')}</a>
       ${mine ? `<button data-delete="${a.id}" class="btn-delete ad__icon" aria-label="Supprimer mon annonce" title="Supprimer mon annonce">${ico('trash')}</button>` : ''}
     </div>
     ${statutButtons}
@@ -930,13 +936,13 @@ function renderMap(list) {
   const withCoords = list.filter(hasCoords);
   withCoords.forEach(a => {
     const cat = CATEGORIES[a.categorie] || { label: a.categorie, icon: '❔' };
-    const color = a.type === 'besoin' ? '#EA580C' : '#059669';
+    const color = a.type === 'besoin' ? '#B93A0B' : '#1F6B45';
     const marker = L.circleMarker([a.lat, a.lon], {
       radius: 9, color: '#111827', weight: 1.5, fillColor: color, fillOpacity: 0.9,
     });
     marker.bindPopup(`
-      <strong>${a.type === 'besoin' ? '🆘 Cherche' : '🤝 Propose'} — ${escapeHTML(cat.label)}</strong><br>
-      📍 ${escapeHTML(lieuComplet(a))}<br>
+      <strong>${a.type === 'besoin' ? 'Besoin' : 'Offre'} · ${escapeHTML(cat.label)}</strong><br>
+      ${escapeHTML(lieuComplet(a))}<br>
       ${escapeHTML(a.description)}<br>
       <a href="tel:${cleanTel(a.contactTel)}">📞 ${escapeHTML(a.contactTel)}</a>
     `);
@@ -1332,12 +1338,32 @@ function openModal(presetType) {
     modalTitle.textContent = 'Publier une annonce';
   }
   formError.classList.add('hidden');
+  updateDescriptionPlaceholder();
+  lastModalTrigger = document.activeElement;
   modalBackdrop.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+  setTimeout(() => el('f-categorie').focus(), 30);
 }
+let lastModalTrigger = null;
+function updateDescriptionPlaceholder() {
+  const type = annonceForm.querySelector('input[name="type"]:checked')?.value;
+  el('f-description').placeholder = type === 'besoin'
+    ? 'Ex : Famille de 4 évacuée, cherche un hébergement pour 2 nuits, avec un chien calme.'
+    : 'Ex : Chambre disponible pour 2 personnes, arrivée possible ce soir, parking.';
+}
+annonceForm.querySelectorAll('input[name="type"]').forEach(r => r.addEventListener('change', updateDescriptionPlaceholder));
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  const open = id => !document.getElementById(id)?.classList.contains('hidden');
+  if (open('modal-backdrop')) closeModal();
+  else if (open('soutien-modal-backdrop')) closeSoutienModal();
+  else if (open('manage-modal-backdrop')) closeManageModal();
+  else if (open('share-modal-backdrop')) closeShareModal();
+});
 function closeModal() {
   modalBackdrop.classList.add('hidden');
   document.body.style.overflow = '';
+  if (lastModalTrigger && document.contains(lastModalTrigger)) lastModalTrigger.focus();
 }
 btnDemander.addEventListener('click', () => openModal('besoin'));
 btnProposer.addEventListener('click', () => openModal('offre'));
@@ -1614,8 +1640,8 @@ const FORCES = {
 };
 
 const AVATAR_COLORS = [
-  { bg: '#FFF7ED', fg: '#EA580C' }, { bg: '#ECFDF5', fg: '#059669' },
-  { bg: '#EEF2FF', fg: '#4338CA' }, { bg: '#FEF2F2', fg: '#DC2626' },
+  { bg: '#FDEFE6', fg: '#94300A' }, { bg: '#E8F3EC', fg: '#175536' },
+  { bg: '#EEF2FF', fg: '#3730A3' }, { bg: '#FEF2F2', fg: '#991B1B' },
 ];
 
 function shuffle(arr) {
@@ -1793,6 +1819,8 @@ function toggleLike(id) {
   }
 }
 
+const SOUTIEN_APERCU = 6;
+let soutienShowAll = false;
 function renderSoutienWall() {
   el('soutien-count').textContent = soutienCache.length ? `${soutienCache.length} message${soutienCache.length > 1 ? 's' : ''}` : '';
   if (!soutienCache.length) {
@@ -1802,7 +1830,15 @@ function renderSoutienWall() {
   }
   soutienEmpty.classList.add('hidden');
   const liked = getLikedIds();
-  soutienWall.innerHTML = soutienCache.map((m, i) => {
+  const visibles = soutienShowAll ? soutienCache : soutienCache.slice(0, SOUTIEN_APERCU);
+  const more = document.getElementById('soutien-more');
+  if (more) {
+    const reste = soutienCache.length - SOUTIEN_APERCU;
+    more.classList.toggle('hidden', reste <= 0);
+    more.textContent = soutienShowAll ? 'Afficher moins de messages' : `Voir les ${reste} autres messages`;
+    more.onclick = () => { soutienShowAll = !soutienShowAll; renderSoutienWall(); };
+  }
+  soutienWall.innerHTML = visibles.map((m, i) => {
     const name = escapeHTML(m.pseudo || 'Anonyme');
     const initial = (m.pseudo || 'A').trim().charAt(0).toUpperCase();
     const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
@@ -1820,7 +1856,7 @@ function renderSoutienWall() {
           <div class="soutien-name">${name}</div>
           ${m.lieu ? `<div class="soutien-lieu">${escapeHTML(m.lieu)}</div>` : ''}
         </div>
-        <button class="soutien-like" data-like="${escapeHTML(m.id)}" data-liked="${isLiked}">${isLiked ? '🧡' : '🤍'} ${likeCount}</button>
+        <button class="soutien-like" data-like="${escapeHTML(m.id)}" data-liked="${isLiked}" aria-pressed="${isLiked}" aria-label="Soutenir ce message (${likeCount})">${ico('heart')} ${likeCount}</button>
       </div>
     </article>`;
   }).join('');
@@ -1896,6 +1932,7 @@ function renderCrise() {
   });
   set('dz-pref', n => { n.href = CRISE.prefecture.url; n.textContent = CRISE.prefecture.label; });
   set('forces-sub', n => { n.textContent = CRISE.forces; });
+  document.title = CRISE.actif ? `Urgence Entraide — ${CRISE.intitule}` : 'Urgence Entraide — entraide citoyenne de proximité';
 }
 renderCrise();
 

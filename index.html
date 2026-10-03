@@ -49,7 +49,7 @@
 <meta property="og:site_name" content="Urgence Entraide Incendie">
 
 <link rel="stylesheet" href="tailwind-built.css?v=11">
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=15">
 <script>
   // Filet de sécurité global : si une erreur JS fatale survient malgré tout,
   // on préfère avertir clairement plutôt que laisser un site silencieusement
@@ -59,12 +59,13 @@
     var b = document.createElement('div');
     b.id = 'fatal-error-banner';
     b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#C2410C;color:#fff;padding:10px 16px;font:600 13px system-ui,sans-serif;text-align:center;';
-    b.textContent = "⚠️ Un problème technique empêche le site de fonctionner normalement. Rechargez la page (Ctrl/Cmd + Maj + R). Si le problème persiste, appelez directement le 18 ou le 112.";
+    b.textContent = "Un problème technique empêche le site de fonctionner normalement. Rechargez la page (Ctrl/Cmd + Maj + R). Si le problème persiste, appelez directement le 18 ou le 112.";
     document.body.prepend(b);
   });
 </script>
 </head>
 <body class="uei">
+<a class="skip" href="#contenu">Aller aux annonces</a>
 
 <!-- Icônes : un seul jeu au trait (remplace les emojis de l'interface) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -91,6 +92,8 @@
   <symbol id="i-car" viewBox="0 0 24 24"><path d="M5 16h14M5 16v2.5M19 16v2.5M4.5 16l1.6-5.2A2 2 0 0 1 8 9.5h8a2 2 0 0 1 1.9 1.3L19.5 16"/><circle cx="8" cy="13.4" r=".6"/><circle cx="16" cy="13.4" r=".6"/></symbol>
   <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
   <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9M7 17H4.5V10a1 1 0 0 1 1-1h13a1 1 0 0 1 1 1v7H17"/><rect x="7" y="14" width="10" height="6.5"/></symbol>
 </defs></svg>
 
@@ -260,6 +263,8 @@
       </div>
     </div>
 
+    <p class="safety"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Bons réflexes :</strong> ne versez jamais d'argent d'avance, donnez rendez-vous dans un lieu public si possible, et signalez toute annonce suspecte.</span></p>
+
     <section id="map-view" class="hidden mapbox">
       <div id="map-container" style="height: 380px;"></div>
       <p class="mapbox__note">Seules les annonces dont la commune a été choisie dans les suggestions apparaissent sur la carte.</p>
@@ -277,7 +282,7 @@
 <!-- Barre d'actions mobile : réapparaît quand les deux grands boutons sortent de l'écran -->
 <div class="mbar" id="mbar" aria-hidden="true">
   <button type="button" class="mbar__b mbar__b--need" data-proxy="btn-demander" tabindex="-1">J'ai besoin d'aide</button>
-  <button type="button" class="mbar__b mbar__b--give" data-proxy="btn-proposer" tabindex="-1">Je propose</button>
+  <button type="button" class="mbar__b mbar__b--give" data-proxy="btn-proposer" tabindex="-1">Je propose de l'aide</button>
 </div>
 
 <!-- Mur de soutien -->
@@ -302,16 +307,17 @@
       <span id="soutien-count" class="wall__count"></span>
     </div>
     <div id="soutien-wall" class="soutien-wall"></div>
+    <button id="soutien-more" type="button" class="hidden wall__more"></button>
     <p id="soutien-empty" class="hidden wall__empty">Soyez le premier à laisser un mot de soutien.</p>
   </div>
 </section>
 
 <!-- Modale message de soutien -->
 <div id="soutien-modal-backdrop" class="hidden fixed inset-0 bg-ink/60 z-40 flex items-end sm:items-center justify-center p-0 sm:p-4">
-  <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 relative">
+  <div role="dialog" aria-modal="true" aria-labelledby="soutien-modal-title" class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 relative">
     <span class="hazard-stripe absolute top-0 left-0 right-0 h-1.5 rounded-t-2xl" aria-hidden="true"></span>
     <div class="flex items-center justify-between mb-4 mt-1">
-      <h3 class="text-lg font-black uppercase tracking-tight">🧡 Message de soutien</h3>
+      <h3 id="soutien-modal-title" class="text-lg font-black uppercase tracking-tight">Message de soutien</h3>
       <button id="btn-close-soutien-modal" class="text-ink/40 hover:text-ink text-2xl leading-none px-2" aria-label="Fermer">×</button>
     </div>
     <form id="soutien-form" class="space-y-3">
@@ -340,7 +346,7 @@
 
 <!-- Modale formulaire annonce -->
 <div id="modal-backdrop" class="hidden fixed inset-0 bg-ink/60 z-40 flex items-end sm:items-center justify-center p-0 sm:p-4">
-  <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl max-h-[92vh] overflow-y-auto p-5 relative">
+  <div role="dialog" aria-modal="true" aria-labelledby="modal-title" class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl max-h-[92vh] overflow-y-auto p-5 relative">
     <span class="hazard-stripe absolute top-0 left-0 right-0 h-1.5 rounded-t-2xl" aria-hidden="true"></span>
     <div class="flex items-center justify-between mb-4 mt-1">
       <h3 id="modal-title" class="text-lg font-black uppercase tracking-tight">Publier une annonce</h3>
@@ -431,14 +437,14 @@
 
 <!-- Modale succès + partage WhatsApp immédiat -->
 <div id="share-modal-backdrop" class="hidden fixed inset-0 bg-ink/60 z-40 flex items-end sm:items-center justify-center p-0 sm:p-4">
-  <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-6 text-center relative overflow-hidden">
+  <div role="dialog" aria-modal="true" aria-labelledby="share-modal-title" class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-6 text-center relative overflow-hidden">
     <span class="hazard-stripe absolute top-0 left-0 right-0 h-1.5" aria-hidden="true"></span>
-    <p class="text-4xl mb-2 mt-2">✅</p>
-    <h3 class="text-lg font-black uppercase tracking-tight mb-1">Annonce publiée !</h3>
+    <span class="okmark" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
+    <h3 id="share-modal-title" class="text-lg font-black uppercase tracking-tight mb-1">Annonce publiée</h3>
     <p class="text-sm text-gray-600 mb-5">Partagez-la maintenant sur WhatsApp pour qu'elle circule tout de suite dans les groupes d'entraide.</p>
     <a id="btn-share-whatsapp-now" href="#" target="_blank" rel="noopener"
       class="min-h-[52px] w-full flex items-center justify-center gap-2 bg-wa hover:bg-wa-dark active:scale-[0.98] transition text-white font-extrabold text-base rounded-xl mb-2">
-      <span class="text-xl">📲</span> Partager sur WhatsApp
+      <svg class="ic" aria-hidden="true"><use href="#i-share"/></svg> Partager sur WhatsApp
     </a>
     <button id="btn-close-share-modal" class="min-h-[44px] w-full text-gray-500 font-semibold text-sm">Plus tard</button>
   </div>
@@ -448,10 +454,12 @@
 <div id="toast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-ink text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-lg"></div>
 
 <footer class="foot">
-  Site citoyen d'entraide, non affilié aux services officiels. En cas de doute, suivez toujours les consignes de la préfecture et des secours.
-  <br>Une question, une idée d'amélioration : <a href="mailto:contact@evoshifting.com">contact@evoshifting.com</a>
-  <br><button id="btn-manage-mine" class="linkbtn">Gérer une annonce que j'ai publiée (autre appareil ou navigation privée)</button>
-  <br><button id="btn-forget-me" class="linkbtn">Effacer mes informations enregistrées sur cet appareil</button>
+  <p class="foot__disc">Site citoyen d'entraide, non affilié aux services officiels. En cas de doute, suivez toujours les consignes de la préfecture et des secours.</p>
+  <div class="foot__acts">
+    <button id="btn-manage-mine" class="linkbtn">Gérer une annonce publiée depuis un autre appareil</button>
+    <button id="btn-forget-me" class="linkbtn">Effacer mes informations sur cet appareil</button>
+  </div>
+  <p class="foot__contact">Une question, un signalement, une idée : <a href="mailto:contact@evoshifting.com">contact@evoshifting.com</a></p>
 </footer>
 
 <!-- Modale "Gérer une annonce" : retrouve la gestion (statut/suppression) d'une
@@ -460,10 +468,10 @@
      publication (déjà public sur l'annonce elle-même, donc pas de nouvelle
      donnée exposée). -->
 <div id="manage-modal-backdrop" class="hidden fixed inset-0 bg-ink/60 z-40 flex items-end sm:items-center justify-center p-0 sm:p-4">
-  <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 relative">
+  <div role="dialog" aria-modal="true" aria-labelledby="manage-modal-title" class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 relative">
     <span class="hazard-stripe absolute top-0 left-0 right-0 h-1.5 rounded-t-2xl" aria-hidden="true"></span>
     <div class="flex items-center justify-between mb-4 mt-1">
-      <h3 class="text-lg font-black uppercase tracking-tight">Gérer une annonce</h3>
+      <h3 id="manage-modal-title" class="text-lg font-black uppercase tracking-tight">Gérer une annonce</h3>
       <button id="btn-close-manage-modal" class="text-ink/40 hover:text-ink text-2xl leading-none px-2" aria-label="Fermer">×</button>
     </div>
     <p class="text-sm text-gray-500 mb-4">Saisissez le numéro de téléphone utilisé à la publication : si des annonces correspondent, vous pourrez à nouveau changer leur statut ou les supprimer depuis le fil, sur cet appareil.</p>
@@ -481,7 +489,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 <script src="firebase-config.js?v=2"></script>
-<script src="app.js?v=31"></script>
+<script src="app.js?v=32"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
