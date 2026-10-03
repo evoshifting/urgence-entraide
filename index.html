@@ -49,7 +49,7 @@
 <meta property="og:site_name" content="Urgence Entraide Incendie">
 
 <link rel="stylesheet" href="tailwind-built.css?v=11">
-<link rel="stylesheet" href="style.css?v=8">
+<link rel="stylesheet" href="style.css?v=12">
 <script>
   // Filet de sécurité global : si une erreur JS fatale survient malgré tout,
   // on préfère avertir clairement plutôt que laisser un site silencieusement
@@ -59,46 +59,67 @@
     var b = document.createElement('div');
     b.id = 'fatal-error-banner';
     b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#C2410C;color:#fff;padding:10px 16px;font:600 13px system-ui,sans-serif;text-align:center;';
-    b.textContent = "⚠️ Un problème technique empêche le site de fonctionner normalement. Essaie de recharger la page (Ctrl/Cmd + Maj + R). Si ça persiste, appelle directement le 18 ou le 112.";
+    b.textContent = "⚠️ Un problème technique empêche le site de fonctionner normalement. Rechargez la page (Ctrl/Cmd + Maj + R). Si le problème persiste, appelez directement le 18 ou le 112.";
     document.body.prepend(b);
   });
 </script>
 </head>
-<body class="bg-warm-50 text-ink font-sans antialiased min-h-screen flex flex-col">
+<body class="uei">
 
-<!-- Zone globale sticky : bandeau danger (seule chose fixe en haut, à toutes largeurs) -->
-<div class="sticky top-0 z-30">
-  <div class="bg-ink text-white text-sm px-4 py-2.5 flex items-center justify-center gap-2 text-center leading-snug">
-    <span aria-hidden="true" class="text-urgent">▲</span>
-    <span><strong>Danger immédiat ?</strong> Appelez le <a href="tel:18" class="underline decoration-urgent decoration-2 font-bold">18</a> (pompiers) ou le <a href="tel:112" class="underline decoration-urgent decoration-2 font-bold">112</a>. Consignes officielles :
-    <a href="https://www.gironde.gouv.fr/Actualites/Breves/Incendie-Centres-d-accueil" target="_blank" rel="noopener" class="underline decoration-urgent decoration-2">gironde.gouv.fr</a></span>
+<!-- Icônes : un seul jeu au trait (remplace les emojis de l'interface) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2.5 20h19L12 3z"/><path d="M12 10v4.5M12 17.2v.1"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h3.5l1.8 4.5-2.2 1.4a11 11 0 0 0 6 6l1.4-2.2L20 15.5V19a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.8 7.4-4.3M8.3 13.2l7.4 4.3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="12" height="12" rx="2"/><path d="M15.5 8.5V5.5a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5L9 4z"/><path d="M9 4v13M15 6.5v13"/></symbol>
+  <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M12 21c4.4-1.5 8-5.4 8-10.5V5l-8-2-8 2v5.5C4 15.6 7.6 19.5 12 21z"/><path d="M12 8v5M12 16v.1"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.1"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="i-bed" viewBox="0 0 24 24"><path d="M3 18V7M3 13h18v5M21 13a3 3 0 0 0-3-3h-7v3"/><circle cx="7" cy="10.5" r="1.8"/></symbol>
+  <symbol id="i-cup" viewBox="0 0 24 24"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9z"/><path d="M16 10.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2.5M12 3.5v2.5"/></symbol>
+  <symbol id="i-food" viewBox="0 0 24 24"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 1.5-3 4-3 7h3v11"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24"><path d="M5 16h14M5 16v2.5M19 16v2.5M4.5 16l1.6-5.2A2 2 0 0 1 8 9.5h8a2 2 0 0 1 1.9 1.3L19.5 16"/><circle cx="8" cy="13.4" r=".6"/><circle cx="16" cy="13.4" r=".6"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9M7 17H4.5V10a1 1 0 0 1 1-1h13a1 1 0 0 1 1 1v7H17"/><rect x="7" y="14" width="10" height="6.5"/></symbol>
+</defs></svg>
+
+<!-- Bandeau danger : la seule chose toujours visible en haut -->
+<div class="dz" role="note">
+  <div class="dz__in">
+    <svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg>
+    <span><strong>Danger immédiat ?</strong> Appelez le <a href="tel:18">18</a> ou le <a href="tel:112">112</a>.<span class="dz__off"> Consignes officielles : <a id="dz-pref" href="https://www.gironde.gouv.fr/Actualites/Breves/Incendie-Centres-d-accueil" target="_blank" rel="noopener">gironde.gouv.fr</a></span></span>
   </div>
-  <div class="hazard-stripe h-1.5" aria-hidden="true"></div>
+  <div class="hazard-stripe dz__stripe" aria-hidden="true"></div>
 </div>
 
 <!-- Alerte navigateur intégré (WhatsApp, Instagram, etc.) -->
-<div id="inapp-banner" class="hidden bg-signal text-ink text-sm px-4 py-3 flex items-start gap-2 leading-snug">
-  <span aria-hidden="true">⚠️</span>
-  <span class="flex-1">
-    <strong>Tu es dans le navigateur intégré d'une appli</strong> (WhatsApp, Instagram...) — le partage en temps réel ne fonctionne pas fiablement ici.
-    Appuie sur <strong>⋯</strong> ou l'icône de partage <strong>en haut/bas de l'écran</strong>, puis choisis <strong>« Ouvrir dans Safari »</strong> (ou Chrome).
+<div id="inapp-banner" class="hidden notice notice--warn">
+  <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>
+  <span class="notice__txt">
+    <strong>Vous êtes dans le navigateur d'une appli</strong> (WhatsApp, Instagram…) : le partage en temps réel n'y fonctionne pas toujours.
+    Touchez <strong>⋯</strong> ou l'icône de partage, puis <strong>« Ouvrir dans Safari »</strong> (ou Chrome).
   </span>
-  <button id="btn-close-inapp-banner" class="text-ink/60 hover:text-ink text-lg leading-none px-1" aria-label="Fermer">×</button>
+  <button id="btn-close-inapp-banner" class="notice__x" aria-label="Fermer">×</button>
 </div>
 
-<!-- Conteneur principal : 1 colonne en dessous de 1024px, 2 colonnes au-delà
-     (colonne gauche fixe/sticky : identité + actions + infos ; colonne
-     droite scrollable : recherche, filtres, fil des annonces). -->
-<div class="flex-1 w-full max-w-[1120px] mx-auto px-4 pb-16 lg:grid lg:grid-cols-[340px_1fr] lg:gap-8 lg:items-start">
+<div class="shell">
 
   <!-- ============================= COLONNE GAUCHE ============================= -->
-  <div class="sidebar-col lg:sticky lg:top-16 pt-4 lg:pt-6">
+  <aside class="side">
 
-    <!-- Logo : nouvelle identité (flamme + cœur en espace négatif), SVG inline
-         (pas <img>) pour pouvoir rejouer l'animation "braise vivante" à
-         chaque publication d'annonce (id="header-logo-svg", voir app.js). -->
-    <a href="./" aria-label="Accueil — Urgence Entraide Incendie" class="flex items-center gap-3 mb-4 w-fit">
-      <svg id="header-logo-svg" width="44" height="44" viewBox="0 0 64 64" style="overflow:visible" class="shrink-0" aria-hidden="true">
+    <a href="./" aria-label="Accueil — Urgence Entraide" class="brand">
+      <svg id="header-logo-svg" width="44" height="44" viewBox="0 0 64 64" style="overflow:visible" class="brand__logo" aria-hidden="true">
         <defs>
           <linearGradient id="uei-tile-hdr" x1="10" y1="6" x2="54" y2="60" gradientUnits="userSpaceOnUse">
             <stop offset="0" stop-color="#FF9D5C"/><stop offset=".52" stop-color="#F26D2B"/><stop offset="1" stop-color="#E14B10"/>
@@ -124,212 +145,166 @@
           <circle class="uei-ember e3" cx="12" cy="20" r=".6" fill="#FFD9A8"/>
         </g>
       </svg>
-      <span class="leading-tight min-w-0">
-        <span class="block text-lg font-extrabold uppercase tracking-tight text-gray-900 truncate">Urgence</span>
-        <span class="block text-sm font-semibold text-gray-700 -mt-0.5 truncate">Entraide Incendie</span>
+      <span class="brand__txt">
+        <span class="brand__name">Urgence Entraide</span>
+        <span class="brand__tag">Entraide citoyenne de proximité</span>
       </span>
     </a>
 
-    <!-- CTA permanents -->
-    <div class="grid grid-cols-2 gap-2 mb-2">
-      <button id="btn-demander" class="min-h-[52px] bg-urgent hover:bg-urgent-dark active:scale-[0.98] transition text-white font-extrabold uppercase tracking-wide text-[15px] rounded-xl flex items-center justify-center gap-1.5">
-        🆘 Demander
+    <!-- Crise en cours : renseignée par CRISE (app.js) -->
+    <p class="crise" id="crise-line"><span class="crise__dot" aria-hidden="true"></span><span id="crise-label">Incendies · Gironde &amp; Landes</span></p>
+
+    <!-- Les deux actions, toujours en premier -->
+    <div class="acts" id="acts">
+      <button id="btn-demander" class="act act--need" type="button">
+        <svg class="ic act__ic" aria-hidden="true"><use href="#i-hand"/></svg>
+        <span class="act__txt"><span class="act__t">J'ai besoin d'aide</span><span class="act__s">Logement, repas, transport…</span></span>
       </button>
-      <button id="btn-proposer" class="min-h-[52px] bg-solid hover:bg-solid-dark active:scale-[0.98] transition text-white font-extrabold uppercase tracking-wide text-[15px] rounded-xl flex items-center justify-center gap-1.5">
-        🤝 Proposer
+      <button id="btn-proposer" class="act act--give" type="button">
+        <svg class="ic act__ic" aria-hidden="true"><use href="#i-heart"/></svg>
+        <span class="act__txt"><span class="act__t">Je propose de l'aide</span><span class="act__s">Une chambre, du matériel, un trajet…</span></span>
       </button>
     </div>
-    <p id="sync-status" class="font-semibold text-xs tracking-wide text-gray-500 mb-4 flex items-center gap-1.5"></p>
+    <div id="stats-bar" class="stats" aria-live="polite"></div>
+    <p id="sync-status" class="sync"></p>
 
-    <!-- Info officielle : carte repliable (une ligne fermée, résumé court + liens en chips ouverte) -->
-    <div id="info-card" class="bg-white border border-sand rounded-[14px] shadow-sm mb-4 overflow-hidden" style="border-left:4px solid #059669;">
-      <button id="info-toggle" type="button" class="w-full flex items-center gap-2.5 px-3.5 py-3 text-left" aria-expanded="true" aria-controls="info-body">
-        <span class="shrink-0 w-7 h-7 rounded-full bg-solid-light flex items-center justify-center text-sm" aria-hidden="true">🏛️</span>
-        <span class="min-w-0 flex-1">
-          <span class="block text-[11px] font-extrabold uppercase tracking-wide text-emerald-700">Info officielle · MAJ 27/07</span>
-          <span class="block text-[14.5px] font-semibold text-ink truncate">Centres d'accueil ouverts — certains déjà saturés</span>
-        </span>
-        <span id="info-chevron" class="shrink-0 text-[11px] font-bold text-gray-400 whitespace-nowrap">Replier ▴</span>
+    <!-- Infos officielles : repliable -->
+    <div id="info-card" class="info">
+      <button id="info-toggle" type="button" class="info__head" aria-expanded="true" aria-controls="info-body">
+        <span class="info__k">Infos officielles <span id="info-maj">· mises à jour le 27/07</span></span>
+        <span class="info__t" id="info-title">Centres d'accueil ouverts, certains déjà saturés</span>
+        <span id="info-chevron" class="info__chev"><svg class="ic" aria-hidden="true"><use href="#i-chevron"/></svg></span>
       </button>
-      <div id="info-body" class="px-3.5 pb-3.5 text-xs text-gray-600 leading-relaxed">
-        <p class="mb-2.5">Des centres d'accueil sont ouverts dans <strong>une douzaine de communes</strong> de Gironde et des Landes. <strong>Certains sont déjà saturés</strong> : vérifie la liste à jour avant de t'y rendre. <strong>Les dons se déposent uniquement en mairie</strong>, jamais directement sur les sites d'accueil.</p>
-        <div class="flex flex-wrap gap-1.5">
-          <a href="https://www.gironde.gouv.fr/Actualites/Breves/Incendie-Centres-d-accueil" target="_blank" rel="noopener" class="info-chip">📞 Liste des centres (préfecture)</a>
-          <a href="https://www.bordeaux-metropole.fr/actualites/incendies-en-gironde-accueil-personnes-evacuees" target="_blank" rel="noopener" class="info-chip">🏙️ Bordeaux Métropole</a>
-          <a href="https://www.landes.gouv.fr/Actualites/Actualites/Incendie-en-cours-retour-des-habitants-dans-les-secteurs-mis-en-securite-de-Biscarrosse" target="_blank" rel="noopener" class="info-chip">🏘️ Retour à Biscarrosse</a>
-          <a href="https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/incendies-et-feux-de-foret/" target="_blank" rel="noopener" class="info-chip">📰 Actu en direct</a>
-          <a href="https://intentanalytics.fr/feux/carte" target="_blank" rel="noopener" class="info-chip">🗺️ Carte des feux en direct</a>
-        </div>
-        <span class="block mt-2.5 text-gray-400 text-[11px]">Résumé vérifié le 27/07/2026 — la situation évolue heure par heure : clique les liens ci-dessus pour les toutes dernières infos.</span>
+      <div id="info-body" class="info__body">
+        <p id="info-resume">Des centres d'accueil sont ouverts dans <strong>une douzaine de communes</strong> de Gironde et des Landes. <strong>Certains sont déjà saturés</strong> : vérifiez la liste à jour avant de vous y rendre. <strong>Les dons se déposent uniquement en mairie</strong>, jamais directement sur les sites d'accueil.</p>
+        <ul class="info__links" id="info-links">
+          <li><a href="https://www.gironde.gouv.fr/Actualites/Breves/Incendie-Centres-d-accueil" target="_blank" rel="noopener">Liste des centres (préfecture)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+          <li><a href="https://www.bordeaux-metropole.fr/actualites/incendies-en-gironde-accueil-personnes-evacuees" target="_blank" rel="noopener">Bordeaux Métropole<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+          <li><a href="https://www.landes.gouv.fr/Actualites/Actualites/Incendie-en-cours-retour-des-habitants-dans-les-secteurs-mis-en-securite-de-Biscarrosse" target="_blank" rel="noopener">Retour à Biscarrosse<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+          <li><a href="https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/incendies-et-feux-de-foret/" target="_blank" rel="noopener">Actualités en direct<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+          <li><a href="https://intentanalytics.fr/feux/carte" target="_blank" rel="noopener">Carte des feux en direct<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+        </ul>
+        <p class="info__note" id="info-note">Résumé vérifié le 27/07/2026. La situation évolue vite : suivez les liens pour les dernières informations.</p>
       </div>
     </div>
-
-    <!-- Tableau de bord rapide -->
-    <div id="stats-bar" class="grid grid-cols-2 gap-2 text-center"></div>
-  </div>
+  </aside>
 
   <!-- ============================= COLONNE DROITE ============================= -->
-  <div class="mt-6 lg:mt-4 min-w-0">
+  <main class="main" id="contenu">
 
-    <!-- Bannière d'import via lien partagé -->
-    <div id="import-banner" class="hidden mb-4 bg-solid-light border border-emerald-200 text-emerald-800 text-xs rounded-2xl px-4 py-3 font-semibold">
-      ✅ Une annonce partagée par lien a été ajoutée au fil.
-    </div>
+    <div id="import-banner" class="hidden notice notice--ok">Une annonce partagée par lien a été ajoutée au fil.</div>
+
+    <h1 class="feed-h">Annonces d'entraide</h1>
 
     <!-- Recherche + tri -->
-    <section class="flex gap-2">
-      <div class="relative flex-1">
-        <input id="search-box" type="search" placeholder="🔍 Rechercher (ex : matelas, camping, chambre…)"
-          class="w-full min-h-[48px] rounded-xl border border-sand px-4 text-base focus:outline-none focus:ring-2 focus:ring-solid">
-      </div>
-      <select id="sort-select" class="min-h-[48px] rounded-xl border border-sand px-3 text-xs font-bold uppercase tracking-wide text-gray-700 focus:outline-none focus:ring-2 focus:ring-solid">
-        <option value="recent">Plus récent</option>
-        <option value="ancien">Plus ancien</option>
-        <option value="distance" disabled>Plus proche</option>
-      </select>
-    </section>
-
-    <!-- Barre de filtres : segment Tout/Cherche/Propose toujours visible + déclencheurs -->
-    <section class="mt-3 flex flex-wrap items-center gap-2 relative">
-      <div id="facet-type" class="segmented"></div>
-
-      <span class="hidden lg:block w-px h-7 bg-sand mx-0.5" aria-hidden="true"></span>
-
-      <button id="btn-toggle-cat" type="button" class="hidden lg:inline-flex filter-dd-btn" aria-expanded="false" aria-controls="filters-panel">
-        🏷️ Catégorie<span id="badge-cat" class="filter-dd-badge hidden"></span><span class="ml-0.5">▾</span>
-      </button>
-      <button id="btn-toggle-zone" type="button" class="hidden lg:inline-flex filter-dd-btn" aria-expanded="false" aria-controls="filters-panel">
-        📍 Zone<span id="badge-zone" class="filter-dd-badge hidden"></span><span class="ml-0.5">▾</span>
-      </button>
-      <button id="btn-geoloc" type="button" class="hidden lg:inline-flex filter-dd-btn filter-dd-btn--dashed">📡 Autour de moi</button>
-
-      <label class="hidden lg:flex items-center gap-2 ml-auto cursor-pointer select-none">
-        <span class="text-xs font-semibold text-gray-600">Masquer clôturées/en pause</span>
-        <span class="toggle-switch-wrap">
-          <input id="chk-hide-resolved" type="checkbox" class="sr-only">
-          <span class="toggle-switch-track"></span>
-        </span>
+    <div class="tools">
+      <label class="search">
+        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+        <span class="sr-only">Rechercher une annonce</span>
+        <input id="search-box" type="search" placeholder="Rechercher une annonce">
       </label>
+      <select id="sort-select" class="sort" aria-label="Trier les annonces">
+        <option value="recent">Plus récentes</option>
+        <option value="ancien">Plus anciennes</option>
+        <option value="distance" disabled>Plus proches</option>
+      </select>
+    </div>
 
-      <button id="btn-open-filters" type="button" class="lg:hidden filter-dd-btn ml-auto">
-        ⚙︎ Filtres<span id="badge-filters" class="filter-dd-badge hidden"></span>
-      </button>
+    <!-- Filtres : type toujours visible, le reste dans le panneau -->
+    <div class="filters">
+      <div id="facet-type" class="segmented" role="group" aria-label="Type d'annonce"></div>
+      <button id="btn-toggle-cat" type="button" class="fbtn fbtn--desk" aria-expanded="false" aria-controls="filters-panel">Catégorie<span id="badge-cat" class="fbadge hidden"></span><svg class="ic" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+      <button id="btn-toggle-zone" type="button" class="fbtn fbtn--desk" aria-expanded="false" aria-controls="filters-panel">Commune<span id="badge-zone" class="fbadge hidden"></span><svg class="ic" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+      <button id="btn-geoloc" type="button" class="fbtn fbtn--desk fbtn--ghost"><svg class="ic" aria-hidden="true"><use href="#i-locate"/></svg>Autour de moi</button>
+      <label class="tgl fbtn--desk">
+        <span class="toggle-switch-wrap"><input id="chk-hide-resolved" type="checkbox" class="sr-only"><span class="toggle-switch-track"></span></span>
+        <span>Masquer les clôturées</span>
+      </label>
+      <button id="btn-open-filters" type="button" class="fbtn fbtn--mob"><svg class="ic" aria-hidden="true"><use href="#i-sliders"/></svg>Filtres<span id="badge-filters" class="fbadge hidden"></span></button>
 
-      <!-- Panneau partagé : ancré en dropdown sur desktop, tiroir du bas sur mobile -->
-      <div id="filters-panel" role="dialog" aria-modal="true" aria-labelledby="filters-panel-title"
-           class="hidden fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-[22px] shadow-2xl p-4 max-h-[85vh] overflow-y-auto
-                  lg:absolute lg:top-full lg:bottom-auto lg:left-0 lg:mt-2 lg:rounded-2xl lg:border lg:border-sand lg:shadow-lg lg:p-3 lg:w-72 lg:z-30 lg:max-h-[70vh]">
-        <button id="btn-close-filters-desktop" type="button" class="hidden lg:flex absolute top-2 right-2 w-7 h-7 items-center justify-center text-gray-400 hover:text-ink text-lg leading-none rounded-full" aria-label="Fermer">×</button>
-        <div class="lg:hidden w-10 h-1.5 bg-gray-300 rounded-full mx-auto mb-3"></div>
-        <div class="lg:hidden flex items-center justify-between mb-3">
-          <h3 id="filters-panel-title" class="font-bold text-sm">Filtres</h3>
-          <button id="btn-reset-filters" type="button" class="text-xs font-bold text-solid">Réinitialiser</button>
+      <!-- Panneau partagé : menu déroulant sur ordinateur, tiroir du bas sur mobile -->
+      <div id="filters-panel" role="dialog" aria-modal="true" aria-labelledby="filters-panel-title" class="hidden fpanel">
+        <button id="btn-close-filters-desktop" type="button" class="fpanel__x fbtn--desk" aria-label="Fermer">×</button>
+        <div class="fpanel__grip fbtn--mob" aria-hidden="true"></div>
+        <div class="fpanel__head fbtn--mob">
+          <h2 id="filters-panel-title">Filtres</h2>
+          <button id="btn-reset-filters" type="button" class="linkbtn">Réinitialiser</button>
         </div>
-
         <div id="filters-section-cat">
-          <h4 class="lg:hidden text-[11px] font-bold uppercase tracking-wide text-gray-500 mb-1.5 mt-1">Catégorie</h4>
-          <div id="facet-cat" class="flex flex-col gap-1"></div>
+          <h3 class="fpanel__k fbtn--mob">Catégorie</h3>
+          <div id="facet-cat" class="flist"></div>
         </div>
-        <div id="filters-section-zone" class="mt-3">
-          <h4 class="lg:hidden text-[11px] font-bold uppercase tracking-wide text-gray-500 mb-1.5">Zone</h4>
-          <input id="zone-search-box" type="search" placeholder="🔍 Rechercher une commune…"
-            class="hidden w-full min-h-[40px] rounded-lg border border-sand px-3 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-solid">
-          <div id="facet-zone" class="flex flex-col gap-1"></div>
+        <div id="filters-section-zone" class="fpanel__sec">
+          <h3 class="fpanel__k fbtn--mob">Commune</h3>
+          <input id="zone-search-box" type="search" placeholder="Rechercher une commune…" class="hidden fsearch">
+          <div id="facet-zone" class="flist"></div>
         </div>
-
-        <!-- Options supplémentaires : uniquement dans le tiroir mobile (déjà visibles en permanence sur desktop) -->
-        <div class="lg:hidden mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">
-          <button id="btn-geoloc-mobile" type="button" class="filter-dd-btn filter-dd-btn--dashed text-left">📡 Autour de moi</button>
-          <label class="flex items-center justify-between gap-2 cursor-pointer select-none py-1">
-            <span class="text-xs font-semibold text-gray-600">Masquer clôturées/en pause</span>
-            <span class="toggle-switch-wrap">
-              <input id="chk-hide-resolved-mobile" type="checkbox" class="sr-only">
-              <span class="toggle-switch-track"></span>
-            </span>
+        <div class="fpanel__more fbtn--mob">
+          <button id="btn-geoloc-mobile" type="button" class="fbtn fbtn--ghost"><svg class="ic" aria-hidden="true"><use href="#i-locate"/></svg>Autour de moi</button>
+          <label class="tgl tgl--row">
+            <span>Masquer les clôturées</span>
+            <span class="toggle-switch-wrap"><input id="chk-hide-resolved-mobile" type="checkbox" class="sr-only"><span class="toggle-switch-track"></span></span>
           </label>
         </div>
-
-        <button id="btn-apply-filters" type="button" class="lg:hidden w-full mt-4 bg-ink text-white font-bold uppercase text-sm rounded-xl py-3 min-h-[48px]">
-          Voir <span id="filters-result-count">0</span> résultat<span id="filters-result-plural"></span>
-        </button>
+        <button id="btn-apply-filters" type="button" class="fapply fbtn--mob">Voir <span id="filters-result-count">0</span> résultat<span id="filters-result-plural"></span></button>
       </div>
-    </section>
-    <div id="filters-overlay" class="hidden lg:hidden fixed inset-0 bg-ink/40 z-40"></div>
+    </div>
+    <div id="filters-overlay" class="hidden fover"></div>
 
-    <!-- Vue Fil / Carte -->
-    <section class="mt-3 flex flex-wrap items-center gap-2">
-      <div class="flex rounded-xl border border-sand overflow-hidden text-xs font-bold uppercase tracking-wide">
-        <button id="btn-view-feed" data-active="true" class="view-toggle-btn min-h-[44px] px-3.5">☰ Fil</button>
-        <button id="btn-view-map" data-active="false" class="view-toggle-btn min-h-[44px] px-3.5 border-l border-sand">🗺️ Carte</button>
+    <!-- En-tête du fil : nombre de résultats + vue Liste / Carte -->
+    <div class="feed-bar">
+      <span id="result-count" class="feed-count"></span>
+      <div class="views" role="group" aria-label="Affichage">
+        <button id="btn-view-feed" data-active="true" class="view-toggle-btn" type="button"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Liste</button>
+        <button id="btn-view-map" data-active="false" class="view-toggle-btn" type="button"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg>Carte</button>
       </div>
+    </div>
+
+    <section id="map-view" class="hidden mapbox">
+      <div id="map-container" style="height: 380px;"></div>
+      <p class="mapbox__note">Seules les annonces dont la commune a été choisie dans les suggestions apparaissent sur la carte.</p>
     </section>
 
-    <!-- Carte interactive -->
-    <section id="map-view" class="hidden mt-3 rounded-2xl border border-sand overflow-hidden">
-      <div id="map-container" style="height: 360px;"></div>
-      <p class="text-xs text-gray-500 px-3 py-2 bg-white">📍 Seules les annonces avec une adresse choisie via les suggestions (pas en saisie libre) apparaissent sur la carte.</p>
-    </section>
-
-    <!-- Bandeau défilant (ticker) : remerciements + messages de soutien + actus RSS, mélangés -->
-    <div class="ticker mt-4">
-      <div class="ticker__track" id="ticker-track"></div>
+    <section id="feed" class="feed" aria-label="Annonces"></section>
+    <div id="empty-state" class="hidden empty">
+      <p class="empty__t">Aucune annonce ne correspond</p>
+      <p class="empty__s">Élargissez la recherche ou les filtres, ou publiez la première annonce.</p>
     </div>
-
-    <!-- Fil d'annonces -->
-    <div class="flex items-center gap-2 mt-6 mb-1">
-      <h2 class="font-bold uppercase tracking-[0.1em] text-gray-500 text-xs">Fil des annonces</h2>
-      <span class="flex-1 h-px bg-sand/70"></span>
-      <span id="result-count" class="font-semibold text-xs text-gray-500 shrink-0"></span>
-    </div>
-    <section id="feed" class="mt-2 space-y-3"></section>
-
-    <div id="empty-state" class="hidden text-center py-14 text-gray-400">
-      <p class="text-4xl mb-2">🕊️</p>
-      <p class="font-bold uppercase tracking-tight text-gray-600">Aucune annonce ne correspond</p>
-      <p class="text-sm">Essaie d'élargir tes filtres, ou sois le premier à publier.</p>
-    </div>
-
-    <!-- Pagination -->
-    <div id="pagination" class="hidden flex items-center justify-between gap-3 mt-6"></div>
-  </div>
+    <div id="pagination" class="hidden pager"></div>
+  </main>
 </div>
 
-<!-- Mur de soutien (pleine largeur, sous les 2 colonnes) -->
-<div class="w-full max-w-[1120px] mx-auto px-4 pb-16">
-  <div class="text-center mt-4 mb-6">
-    <h2 class="text-gray-900" style="font-family: Georgia, 'Times New Roman', serif; font-size: 30px; font-weight: 500;">Mur de soutien</h2>
-    <p class="text-[15px] text-gray-500 mt-1.5">Un mot pour celles et ceux qui se mobilisent — victimes, secours, bénévoles, donateurs.</p>
-  </div>
+<!-- Barre d'actions mobile : réapparaît quand les deux grands boutons sortent de l'écran -->
+<div class="mbar" id="mbar" aria-hidden="true">
+  <button type="button" class="mbar__b mbar__b--need" data-proxy="btn-demander" tabindex="-1">J'ai besoin d'aide</button>
+  <button type="button" class="mbar__b mbar__b--give" data-proxy="btn-proposer" tabindex="-1">Je propose</button>
+</div>
 
-  <!-- Bandeau de remerciement aux forces engagées : carte légère avec un
-       seul rang de pastilles qui défile (ordre mélangé une fois par
-       chargement) -->
-  <section class="forces mb-6">
-    <div class="forces__head">
-      <img src="logo.svg?v=1" width="34" height="34" alt="" class="shrink-0">
+<!-- Mur de soutien -->
+<section class="wall" aria-labelledby="wall-h">
+  <div class="wall__in">
+    <div class="wall__head">
       <div>
-        <div class="forces__title">Merci à toutes les forces engagées</div>
-        <div class="forces__sub">Pompiers, aériens, soignants, État, forêt, citoyens — Gironde, juillet 2026.</div>
+        <h2 id="wall-h">Mur de soutien</h2>
+        <p>Un mot pour celles et ceux qui se mobilisent : sinistrés, secours, bénévoles, donateurs.</p>
       </div>
+      <button id="btn-soutien" class="btn-soutien" type="button"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Laisser un message</button>
     </div>
-    <div class="fmarq">
-      <div class="fmarq__track" id="forces-track"></div>
+    <section class="forces">
+      <div class="forces__head">
+        <div class="forces__title">Merci à toutes les forces engagées</div>
+        <div class="forces__sub" id="forces-sub">Pompiers, aériens, soignants, État, forêt, citoyens — Gironde, juillet 2026.</div>
+      </div>
+      <div class="fmarq"><div class="fmarq__track" id="forces-track"></div></div>
+    </section>
+    <div class="wall__bar">
+      <h3>Messages des visiteurs</h3>
+      <span id="soutien-count" class="wall__count"></span>
     </div>
-  </section>
-
-  <div class="flex justify-center mb-6">
-    <button id="btn-soutien" class="min-h-[52px] px-8 bg-ink hover:bg-gray-800 active:scale-[0.98] transition text-white font-bold text-base rounded-full flex items-center justify-center gap-1.5">
-      🧡 Laisser un message
-    </button>
+    <div id="soutien-wall" class="soutien-wall"></div>
+    <p id="soutien-empty" class="hidden wall__empty">Soyez le premier à laisser un mot de soutien.</p>
   </div>
-
-  <div class="flex items-center gap-2 mb-3">
-    <h3 class="font-extrabold uppercase tracking-[0.06em] text-gray-700 text-xs">Messages des visiteurs</h3>
-    <span id="soutien-count" class="text-xs text-gray-400"></span>
-  </div>
-  <div id="soutien-wall" class="soutien-wall"></div>
-  <p id="soutien-empty" class="hidden text-center text-sm text-gray-400 py-8">Soyez le premier à laisser un mot de soutien.</p>
-</div>
+</section>
 
 <!-- Modale message de soutien -->
 <div id="soutien-modal-backdrop" class="hidden fixed inset-0 bg-ink/60 z-40 flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -375,15 +350,15 @@
     <form id="annonce-form" class="space-y-4">
       <!-- Type -->
       <div>
-        <span class="block text-xs font-bold uppercase tracking-wide text-gray-600 mb-2">Je...</span>
+        <span class="block text-xs font-bold uppercase tracking-wide text-gray-600 mb-2">Vous…</span>
         <div class="grid grid-cols-2 gap-2">
           <label class="type-radio-label cursor-pointer border-2 rounded-xl p-3 min-h-[52px] flex items-center justify-center text-center font-bold text-sm">
             <input type="radio" name="type" value="besoin" class="sr-only" required>
-            🆘 cherche de l'aide
+            cherche de l'aide
           </label>
           <label class="type-radio-label cursor-pointer border-2 rounded-xl p-3 min-h-[52px] flex items-center justify-center text-center font-bold text-sm">
             <input type="radio" name="type" value="offre" class="sr-only" required>
-            🤝 propose de l'aide
+            propose de l'aide
           </label>
         </div>
       </div>
@@ -393,13 +368,13 @@
         <label for="f-categorie" class="block text-xs font-bold uppercase tracking-wide text-gray-600 mb-1">Type d'aide</label>
         <select id="f-categorie" required class="w-full min-h-[52px] rounded-xl border border-sand px-4 text-base focus:outline-none focus:ring-2 focus:ring-solid">
           <option value="" disabled selected>Choisir…</option>
-          <option value="logement">🏠 Logement entier</option>
-          <option value="chambre">🛏️ Chambre d'amis</option>
-          <option value="accueil_jour">☕ Accueil de jour (repos, douche, recharge tel.)</option>
-          <option value="nourriture">🍽️ Nourriture / eau</option>
-          <option value="materiel">📦 Matériel d'urgence (lit de camp, vêtements, chargeurs…)</option>
-          <option value="transport">🚗 Transport</option>
-          <option value="autre">❔ Autre</option>
+          <option value="logement">Logement entier</option>
+          <option value="chambre">Chambre d'amis</option>
+          <option value="accueil_jour">Accueil de jour (repos, douche, recharge du téléphone)</option>
+          <option value="nourriture">Nourriture / eau</option>
+          <option value="materiel">Matériel d'urgence (lit de camp, vêtements, chargeurs…)</option>
+          <option value="transport">Transport</option>
+          <option value="autre">Autre</option>
         </select>
       </div>
 
@@ -407,20 +382,20 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div class="relative">
           <label for="f-commune-input" class="block text-xs font-bold uppercase tracking-wide text-gray-600 mb-1">Ville</label>
-          <input id="f-commune-input" type="text" required autocomplete="off" placeholder="Tape une ville : Bordeaux, Mérignac, Biscarrosse…"
+          <input id="f-commune-input" type="text" required autocomplete="off" placeholder="Votre commune : Bordeaux, Mérignac…"
             class="w-full min-h-[52px] rounded-xl border border-sand px-4 text-base focus:outline-none focus:ring-2 focus:ring-solid">
           <input type="hidden" id="f-commune">
           <input type="hidden" id="f-lat">
           <input type="hidden" id="f-lon">
           <ul id="f-commune-suggestions" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border border-sand rounded-xl shadow-lg max-h-56 overflow-y-auto"></ul>
-          <p class="text-xs text-gray-400 mt-1">Suggestions officielles (API Découpage administratif). Pour une grande ville, choisis directement le bon code postal dans la liste. Pas d'internet ? Tape simplement le nom, ça marche aussi.</p>
+          <p class="text-xs text-gray-400 mt-1">Choisissez une suggestion pour apparaître sur la carte. Sans connexion, tapez simplement le nom de la commune.</p>
         </div>
         <div class="relative">
           <label for="f-quartier" class="block text-xs font-bold uppercase tracking-wide text-gray-600 mb-1">Quartier / repère</label>
           <input id="f-quartier" type="text" autocomplete="off" placeholder="Ex : Bacalan, proche camping, centre-ville…"
             class="w-full min-h-[52px] rounded-xl border border-sand px-4 text-base focus:outline-none focus:ring-2 focus:ring-solid">
           <ul id="f-quartier-suggestions" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border border-sand rounded-xl shadow-lg max-h-56 overflow-y-auto"></ul>
-          <p class="text-xs text-gray-400 mt-1">Facultatif — choisir une suggestion précise l'emplacement sur la carte.</p>
+          <p class="text-xs text-gray-400 mt-1">Facultatif : une suggestion précise l'emplacement sur la carte.</p>
         </div>
       </div>
 
@@ -442,7 +417,7 @@
           <label for="f-tel" class="block text-xs font-bold uppercase tracking-wide text-gray-600 mb-1">Téléphone</label>
           <input id="f-tel" required type="tel" inputmode="tel" placeholder="06 12 34 56 78 ou +33…" class="w-full min-h-[52px] rounded-xl border border-sand px-4 text-base focus:outline-none focus:ring-2 focus:ring-solid">
           <p id="f-tel-error" class="hidden text-xs text-urgent font-semibold mt-1">Numéro invalide (10 chiffres, ou +33 suivi de 9 chiffres)</p>
-          <p class="text-xs text-gray-400 mt-1">⚠️ Visible publiquement par tous les visiteurs, pas seulement sur ce site.</p>
+          <p class="text-xs text-gray-400 mt-1">Visible publiquement par tous les visiteurs.</p>
         </div>
       </div>
 
@@ -460,7 +435,7 @@
     <span class="hazard-stripe absolute top-0 left-0 right-0 h-1.5" aria-hidden="true"></span>
     <p class="text-4xl mb-2 mt-2">✅</p>
     <h3 class="text-lg font-black uppercase tracking-tight mb-1">Annonce publiée !</h3>
-    <p class="text-sm text-gray-600 mb-5">Partage-la maintenant sur WhatsApp pour qu'elle circule immédiatement dans les groupes d'entraide.</p>
+    <p class="text-sm text-gray-600 mb-5">Partagez-la maintenant sur WhatsApp pour qu'elle circule tout de suite dans les groupes d'entraide.</p>
     <a id="btn-share-whatsapp-now" href="#" target="_blank" rel="noopener"
       class="min-h-[52px] w-full flex items-center justify-center gap-2 bg-wa hover:bg-wa-dark active:scale-[0.98] transition text-white font-extrabold text-base rounded-xl mb-2">
       <span class="text-xl">📲</span> Partager sur WhatsApp
@@ -472,11 +447,11 @@
 <!-- Toast -->
 <div id="toast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-ink text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-lg"></div>
 
-<footer class="w-full max-w-[1120px] mx-auto px-4 py-6 text-center text-xs text-gray-400 leading-relaxed">
+<footer class="foot">
   Site citoyen d'entraide, non affilié aux services officiels. En cas de doute, suivez toujours les consignes de la préfecture et des secours.
-  <br>Fait avec ❤️, pour soutien et idées d'améliorations : <a href="mailto:contact@evoshifting.com" class="underline">contact@evoshifting.com</a>
-  <br><button id="btn-manage-mine" class="underline mt-1 min-h-[44px]">Gérer une annonce que j'ai publiée (autre appareil ou navigation privée)</button>
-  <br><button id="btn-forget-me" class="underline mt-1 min-h-[44px]">Effacer mes informations enregistrées sur cet appareil</button>
+  <br>Une question, une idée d'amélioration : <a href="mailto:contact@evoshifting.com">contact@evoshifting.com</a>
+  <br><button id="btn-manage-mine" class="linkbtn">Gérer une annonce que j'ai publiée (autre appareil ou navigation privée)</button>
+  <br><button id="btn-forget-me" class="linkbtn">Effacer mes informations enregistrées sur cet appareil</button>
 </footer>
 
 <!-- Modale "Gérer une annonce" : retrouve la gestion (statut/suppression) d'une
@@ -491,7 +466,7 @@
       <h3 class="text-lg font-black uppercase tracking-tight">Gérer une annonce</h3>
       <button id="btn-close-manage-modal" class="text-ink/40 hover:text-ink text-2xl leading-none px-2" aria-label="Fermer">×</button>
     </div>
-    <p class="text-sm text-gray-500 mb-4">Entre le numéro de téléphone utilisé à la publication : si une ou plusieurs annonces correspondent, tu pourras à nouveau changer leur statut ou les supprimer depuis le fil, sur cet appareil.</p>
+    <p class="text-sm text-gray-500 mb-4">Saisissez le numéro de téléphone utilisé à la publication : si des annonces correspondent, vous pourrez à nouveau changer leur statut ou les supprimer depuis le fil, sur cet appareil.</p>
     <form id="manage-form" class="space-y-3">
       <input id="manage-tel" type="tel" inputmode="tel" required placeholder="06 12 34 56 78" class="w-full min-h-[52px] rounded-xl border border-sand px-4 text-base focus:outline-none focus:ring-2 focus:ring-solid">
       <p id="manage-error" class="hidden text-xs text-urgent font-semibold">Aucune annonce trouvée avec ce numéro.</p>
@@ -506,7 +481,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 <script src="firebase-config.js?v=2"></script>
-<script src="app.js?v=29"></script>
+<script src="app.js?v=31"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

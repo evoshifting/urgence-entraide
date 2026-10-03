@@ -23,13 +23,37 @@ const MINE_KEY = 'uei_mine_v1';
 const PAGE_SIZE = 8;
 
 const CATEGORIES = {
-  logement:     { label: 'Logement entier', icon: '🏠' },
-  chambre:      { label: "Chambre d'amis", icon: '🛏️' },
-  accueil_jour: { label: 'Accueil de jour', icon: '☕' },
-  nourriture:   { label: 'Nourriture / eau', icon: '🍽️' },
-  materiel:     { label: "Matériel d'urgence", icon: '📦' },
-  transport:    { label: 'Transport', icon: '🚗' },
-  autre:        { label: 'Autre', icon: '❔' },
+  logement:     { label: 'Logement entier', icon: '🏠', svg: 'home' },
+  chambre:      { label: "Chambre d'amis", icon: '🛏️', svg: 'bed' },
+  accueil_jour: { label: 'Accueil de jour', icon: '☕', svg: 'cup' },
+  nourriture:   { label: 'Nourriture / eau', icon: '🍽️', svg: 'food' },
+  materiel:     { label: "Matériel d'urgence", icon: '📦', svg: 'box' },
+  transport:    { label: 'Transport', icon: '🚗', svg: 'car' },
+  autre:        { label: 'Autre', icon: '❔', svg: 'dots' },
+};
+const ico = (name, cls = 'ic') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+
+/* =====================================================================
+   CRISE EN COURS : le seul endroit à modifier pour réactiver le site
+   lors d'une prochaine urgence (incendie, inondation, tempête…).
+   actif:false affiche le site en veille (pastille grise, sans date).
+===================================================================== */
+const CRISE = {
+  actif: true,
+  intitule: 'Incendies · Gironde & Landes',
+  maj: '27/07',
+  titreInfo: "Centres d'accueil ouverts, certains déjà saturés",
+  resume: "Des centres d'accueil sont ouverts dans <strong>une douzaine de communes</strong> de Gironde et des Landes. <strong>Certains sont déjà saturés</strong> : vérifiez la liste à jour avant de vous y rendre. <strong>Les dons se déposent uniquement en mairie</strong>, jamais directement sur les sites d'accueil.",
+  note: 'Résumé vérifié le 27/07/2026. La situation évolue vite : suivez les liens pour les dernières informations.',
+  prefecture: { label: 'gironde.gouv.fr', url: 'https://www.gironde.gouv.fr/Actualites/Breves/Incendie-Centres-d-accueil' },
+  liens: [
+    { label: 'Liste des centres (préfecture)', url: 'https://www.gironde.gouv.fr/Actualites/Breves/Incendie-Centres-d-accueil' },
+    { label: 'Bordeaux Métropole', url: 'https://www.bordeaux-metropole.fr/actualites/incendies-en-gironde-accueil-personnes-evacuees' },
+    { label: 'Retour à Biscarrosse', url: 'https://www.landes.gouv.fr/Actualites/Actualites/Incendie-en-cours-retour-des-habitants-dans-les-secteurs-mis-en-securite-de-Biscarrosse' },
+    { label: 'Actualités en direct', url: 'https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/incendies-et-feux-de-foret/' },
+    { label: 'Carte des feux en direct', url: 'https://intentanalytics.fr/feux/carte' },
+  ],
+  forces: 'Pompiers, aériens, soignants, État, forêt, citoyens — Gironde, juillet 2026.',
 };
 
 const STATUTS = {
@@ -83,12 +107,13 @@ function makeId() {
 function setSyncStatus(state) {
   const status = el('sync-status');
   const map = {
-    connecting:   '🟡 Connexion au fil partagé…',
-    online:       '🟢 Partagé (vérification toutes les 12s) avec tous les visiteurs',
-    error:        '🟠 Fil partagé indisponible pour le moment — nouvelle tentative automatique en cours',
-    'offline-local': '⚪ Mode local uniquement — configure firebase-config.js pour partager les annonces avec tout le monde',
+    connecting:   'Connexion au fil partagé…',
+    online:       'Partagé en direct avec tous les visiteurs',
+    error:        'Fil partagé momentanément indisponible, nouvelle tentative en cours',
+    'offline-local': 'Mode local : les annonces restent sur cet appareil',
   };
   status.textContent = map[state] || '';
+  status.setAttribute('data-state', state);
 }
 
 const POLL_INTERVAL_MS = 12000;
@@ -435,7 +460,7 @@ function setIdentity(prenom, tel) {
 }
 
 btnForgetMe.addEventListener('click', () => {
-  if (!confirm("Effacer ton prénom/téléphone mémorisés et l'historique de tes propres annonces sur cet appareil ? (Tes annonces déjà publiées resteront visibles dans le fil, mais tu ne pourras plus les supprimer depuis cet appareil.)")) return;
+  if (!confirm("Effacer votre prénom et votre téléphone mémorisés, et l'historique de vos annonces sur cet appareil ? (Vos annonces déjà publiées resteront visibles dans le fil, mais vous ne pourrez plus les supprimer depuis cet appareil.)")) return;
   localStorage.removeItem('uei_prenom');
   localStorage.removeItem('uei_tel');
   localStorage.removeItem(MINE_KEY);
@@ -648,22 +673,22 @@ function renderFacets(all, searchFiltered) {
   const cOffre = byType.filter(a => a.type === 'offre').length;
   facetType.innerHTML =
     facetRow('Tout', byType.length, filterType === 'all', `data-filter-type="all"`) +
-    facetRow('🆘 Cherche', cBesoin, filterType === 'besoin', `data-filter-type="besoin"`) +
-    facetRow('🤝 Propose', cOffre, filterType === 'offre', `data-filter-type="offre"`);
+    facetRow('Besoins', cBesoin, filterType === 'besoin', `data-filter-type="besoin"`) +
+    facetRow('Offres', cOffre, filterType === 'offre', `data-filter-type="offre"`);
 
   // -- Catégorie --
   const byCat = filteredExcept(searchFiltered, 'cat');
   facetCat.innerHTML =
     facetRow('Toutes catégories', byCat.length, filterCat === 'all', `data-filter-cat="all"`) +
     Object.entries(CATEGORIES).map(([key, c]) =>
-      facetRow(`${c.icon} ${c.label}`, byCat.filter(a => a.categorie === key).length, filterCat === key, `data-filter-cat="${key}"`)
+      facetRow(`${ico(c.svg)}${c.label}`, byCat.filter(a => a.categorie === key).length, filterCat === key, `data-filter-cat="${key}"`)
     ).join('');
 
   // -- Zone (dynamique, construite à partir des communes réellement utilisées) --
   const byZone = filteredExcept(searchFiltered, 'zone');
   const zones = [...new Set(all.map(a => a.commune))].sort((a, b) => a.localeCompare(b, 'fr'));
   facetZone.innerHTML =
-    facetRow('📍 Toutes zones', byZone.length, filterZone === 'all', `data-filter-zone="all"`) +
+    facetRow('Toutes les communes', byZone.length, filterZone === 'all', `data-filter-zone="all"`) +
     zones.map(z => facetRow(escapeHTML(z), byZone.filter(a => a.commune === z).length, filterZone === z, `data-filter-zone="${escapeHTML(z)}" data-zone-label="${escapeHTML(normalizeText(z))}"`)).join('');
   // Au-delà d'une poignée de communes (typiquement dès qu'il y a plusieurs
   // dizaines d'annonces réparties sur le territoire), une liste plate
@@ -706,14 +731,8 @@ function renderStats(all) {
   const offres = actives.filter(a => a.type === 'offre').length;
   const besoins = actives.filter(a => a.type === 'besoin').length;
   statsBar.innerHTML = `
-    <div class="bg-solid-light rounded-2xl py-3">
-      <p class="text-2xl font-black text-solid-dark leading-none">${offres}</p>
-      <p class="text-xs font-bold uppercase tracking-wide text-emerald-700/80 mt-1">offre${offres > 1 ? 's' : ''} disponible${offres > 1 ? 's' : ''}</p>
-    </div>
-    <div class="bg-urgent-light rounded-2xl py-3">
-      <p class="text-2xl font-black text-urgent-dark leading-none">${besoins}</p>
-      <p class="text-xs font-bold uppercase tracking-wide text-orange-700/80 mt-1">besoin${besoins > 1 ? 's' : ''} en attente</p>
-    </div>`;
+    <span class="s-give"><b>${offres}</b> offre${offres > 1 ? 's' : ''} disponible${offres > 1 ? 's' : ''}</span>
+    <span class="s-need"><b>${besoins}</b> besoin${besoins > 1 ? 's' : ''} en attente</span>`;
 }
 
 /* =====================================================================
@@ -721,50 +740,46 @@ function renderStats(all) {
 ===================================================================== */
 
 function cardHTML(a) {
-  const cat = CATEGORIES[a.categorie] || { label: a.categorie, icon: '❔' };
+  const cat = CATEGORIES[a.categorie] || { label: a.categorie, icon: '❔', svg: 'dots' };
   const isBesoin = a.type === 'besoin';
-  const badgeClass = isBesoin ? 'badge-cherche' : 'badge-propose';
-  const badgeLabel = isBesoin ? 'Cherche' : 'Propose';
   const statutKey = a.statut || 'ouvert';
   const statut = STATUTS[statutKey] || STATUTS.ouvert;
-  const inactiveClass = statutKey !== 'ouvert' ? 'card-annonce--inactive' : '';
+  const off = statutKey !== 'ouvert';
   const mine = getMineIds().has(a.id);
   const telClean = cleanTel(a.contactTel);
+  const prenom = escapeHTML(a.contactPrenom);
   const distLabel = (userPos && hasCoords(a))
-    ? ` · ${distanceKm(userPos.lat, userPos.lon, a.lat, a.lon).toFixed(1)} km`
+    ? ` · ${distanceKm(userPos.lat, userPos.lon, a.lat, a.lon).toFixed(1).replace('.', ',')} km`
     : '';
 
   const statutButtons = mine ? `
-    <div class="flex items-center flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-100">
-      <span class="text-xs font-bold uppercase text-gray-500 mr-1">Statut :</span>
+    <div class="ad__mine">
+      <span class="ad__mine-k">Votre annonce :</span>
       ${Object.entries(STATUTS).map(([key, s]) =>
-        `<button data-set-statut="${a.id}" data-statut-value="${key}" class="statut-btn" data-active="${statutKey === key}">${s.icon} ${s.label}</button>`
+        `<button data-set-statut="${a.id}" data-statut-value="${key}" class="statut-btn" data-active="${statutKey === key}">${s.label}</button>`
       ).join('')}
     </div>` : '';
 
+  // « Ouvert » est l'état normal : on ne l'affiche qu'en lecteur d'écran ; les autres états se voient.
+  const statutBadge = off
+    ? `<span class="ad__st statut-badge--${statutKey}">${statut.label}</span>`
+    : `<span class="sr-only statut-badge--${statutKey}">${statut.label}</span>`;
+
   return `
-  <article class="card-enter card-annonce ${inactiveClass} bg-white border border-gray-100 rounded-[18px] shadow-sm px-[22px] py-5">
-    <div class="flex items-start justify-between gap-2 mb-2.5">
-      <div class="flex items-center gap-2 flex-wrap">
-        <span class="text-[11.5px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded-lg ${badgeClass}">${badgeLabel}</span>
-        <span class="text-[13px] text-gray-500">${cat.icon} ${cat.label}</span>
-        <span class="text-xs font-semibold px-2 py-0.5 rounded-full statut-badge--${statutKey}">${statut.icon} ${statut.label}</span>
-      </div>
-      <span class="text-xs text-gray-400 shrink-0">${timeAgo(a.createdAt)}${distLabel}</span>
+  <article class="card-enter card-annonce ad ${isBesoin ? 'ad--need' : 'ad--give'} ${off ? 'ad--off card-annonce--inactive' : ''}">
+    <div class="ad__top">
+      <span class="ad__type">${isBesoin ? 'Besoin' : 'Offre'}</span>
+      <span class="ad__cat">${ico(cat.svg)}${escapeHTML(cat.label)}</span>
+      ${statutBadge}
+      <span class="ad__when">${timeAgo(a.createdAt)}${distLabel}</span>
     </div>
-
-    <p class="text-[16.5px] text-gray-800 leading-[1.6] tracking-[-0.005em]">${escapeHTML(a.description)}</p>
-
-    <p class="text-sm text-gray-500 mt-2.5">
-      📍 <strong class="text-gray-700 font-semibold">${escapeHTML(lieuComplet(a))}</strong>
-      <span class="text-gray-400">· ${escapeHTML(a.contactPrenom)}</span>
-      <button data-copy="${escapeHTML(a.contactTel)}" class="btn-copy underline decoration-gray-300 hover:text-gray-700">Copier n°</button>
-    </p>
-
-    <div class="flex items-center gap-2.5 mt-4 pt-4 border-t border-gray-100">
-      <a href="tel:${telClean}" class="flex-1 min-h-[42px] inline-flex items-center justify-center gap-1.5 text-[15px] font-semibold bg-gray-100 hover:bg-gray-200 active:scale-[.97] transition text-gray-900 rounded-xl">📞 Appeler</a>
-      <a href="${whatsappLink(a)}" target="_blank" rel="noopener" class="flex-1 min-h-[42px] inline-flex items-center justify-center gap-1.5 text-[15px] font-semibold bg-wa hover:bg-wa-dark active:scale-[.97] transition text-white rounded-xl">💬 Partager</a>
-      ${mine ? `<button data-delete="${a.id}" class="btn-delete min-h-[42px] min-w-[42px] text-sm font-semibold text-gray-400 hover:text-urgent shrink-0" aria-label="Supprimer mon annonce">🗑️</button>` : ''}
+    <p class="ad__desc">${escapeHTML(a.description)}</p>
+    <p class="ad__where">${ico('pin')}<span><strong>${escapeHTML(lieuComplet(a))}</strong> · ${prenom}</span></p>
+    <div class="ad__acts">
+      <a href="tel:${telClean}" class="ad__call">${ico('phone')}<span class="ad__callt">Appeler ${prenom}</span></a>
+      <a href="${whatsappLink(a)}" target="_blank" rel="noopener" class="ad__share">${ico('share')}<span>Partager</span></a>
+      <button data-copy="${escapeHTML(a.contactTel)}" class="btn-copy ad__icon" aria-label="Copier le numéro" title="Copier le numéro">${ico('copy')}</button>
+      ${mine ? `<button data-delete="${a.id}" class="btn-delete ad__icon" aria-label="Supprimer mon annonce" title="Supprimer mon annonce">${ico('trash')}</button>` : ''}
     </div>
     ${statutButtons}
   </article>`;
@@ -818,9 +833,9 @@ function renderFeed() {
   if (totalPages > 1) {
     pagination.classList.remove('hidden');
     pagination.innerHTML = `
-      <button id="page-prev" ${currentPage === 1 ? 'disabled' : ''} class="min-h-[44px] px-4 py-2 rounded-xl border border-sand text-xs font-bold uppercase tracking-wide disabled:opacity-30 bg-white">← Précédent</button>
-      <span class="font-semibold text-xs text-gray-500">Page ${currentPage} / ${totalPages}</span>
-      <button id="page-next" ${currentPage === totalPages ? 'disabled' : ''} class="min-h-[44px] px-4 py-2 rounded-xl border border-sand text-xs font-bold uppercase tracking-wide disabled:opacity-30 bg-white">Suivant →</button>`;
+      <button id="page-prev" ${currentPage === 1 ? 'disabled' : ''}>Précédentes</button>
+      <span>Page ${currentPage} sur ${totalPages}</span>
+      <button id="page-next" ${currentPage === totalPages ? 'disabled' : ''}>Suivantes</button>`;
     el('page-prev')?.addEventListener('click', () => { currentPage--; renderFeed(); window.scrollTo({ top: feed.offsetTop - 90, behavior: 'smooth' }); });
     el('page-next')?.addEventListener('click', () => { currentPage++; renderFeed(); window.scrollTo({ top: feed.offsetTop - 90, behavior: 'smooth' }); });
   } else {
@@ -837,7 +852,7 @@ feed.addEventListener('click', async (e) => {
   const copyBtn = e.target.closest('.btn-copy');
   if (copyBtn) {
     const tel = copyBtn.getAttribute('data-copy');
-    try { await navigator.clipboard.writeText(tel); showToast('Numéro copié ✓'); }
+    try { await navigator.clipboard.writeText(tel); showToast('Numéro copié'); }
     catch { showToast(tel); }
     return;
   }
@@ -977,11 +992,11 @@ function triggerGeoloc(sourceBtn) {
     return;
   }
   const allGeolocBtns = [btnGeoloc, btnGeolocMobile].filter(Boolean);
-  allGeolocBtns.forEach(b => b.textContent = '📍 Localisation…');
+  allGeolocBtns.forEach(b => b.innerHTML = `${ico('locate')}Localisation…`);
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       userPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-      allGeolocBtns.forEach(b => b.textContent = '📍 Autour de moi ✓');
+      allGeolocBtns.forEach(b => { b.innerHTML = `${ico('locate')}Autour de moi`; b.setAttribute('data-active', 'true'); });
       const distOption = sortSelect.querySelector('option[value="distance"]');
       if (distOption) distOption.disabled = false;
       sortSelect.value = 'distance';
@@ -990,7 +1005,7 @@ function triggerGeoloc(sourceBtn) {
       renderFeed();
     },
     (err) => {
-      allGeolocBtns.forEach(b => b.textContent = '📍 Autour de moi');
+      allGeolocBtns.forEach(b => b.innerHTML = `${ico('locate')}Autour de moi`);
       showToast("Localisation refusée ou indisponible");
       console.warn('[UEI] Géolocalisation refusée/indisponible', err);
     },
@@ -1126,12 +1141,10 @@ if (zoneSearchBox) {
 if (infoCard && infoToggle) {
   infoCard.setAttribute('data-open', isDesktopFilters() ? 'true' : 'false');
   infoToggle.setAttribute('aria-expanded', isDesktopFilters() ? 'true' : 'false');
-  infoChevron.textContent = isDesktopFilters() ? 'Replier ▴' : 'Détails ▾';
   infoToggle.addEventListener('click', () => {
     const nowOpen = infoCard.getAttribute('data-open') !== 'true';
     infoCard.setAttribute('data-open', String(nowOpen));
     infoToggle.setAttribute('aria-expanded', String(nowOpen));
-    infoChevron.textContent = nowOpen ? 'Replier ▴' : 'Détails ▾';
   });
 }
 
@@ -1681,6 +1694,7 @@ function tickerChipHTML(it) {
 }
 
 async function renderTicker() {
+  if (!document.getElementById('ticker-track')) return;
   const track = el('ticker-track');
   const supportItems = soutienCache
     .filter(m => m.message)
@@ -1851,7 +1865,7 @@ soutienForm.addEventListener('submit', (e) => {
   if (!message) return;
   addSoutienMessage(message.slice(0, 200), pseudo.slice(0, 30), lieu.slice(0, 40));
   closeSoutienModal();
-  showToast('Merci pour ce message 🧡');
+  showToast('Merci pour votre message');
 });
 
 /* =====================================================================
@@ -1865,6 +1879,42 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.add('hidden'), 2200);
 }
+
+/* =====================================================================
+   CRISE EN COURS : affichage depuis l'objet CRISE (haut du fichier)
+===================================================================== */
+function renderCrise() {
+  const set = (id, fn) => { const n = document.getElementById(id); if (n) fn(n); };
+  set('crise-line', n => n.setAttribute('data-actif', String(!!CRISE.actif)));
+  set('crise-label', n => { n.textContent = CRISE.actif ? CRISE.intitule : 'Aucune crise en cours · le site reste prêt'; });
+  set('info-title', n => { n.textContent = CRISE.titreInfo; });
+  set('info-maj', n => { n.textContent = CRISE.maj ? `· mises à jour le ${CRISE.maj}` : ''; });
+  set('info-resume', n => { n.innerHTML = CRISE.resume; });
+  set('info-note', n => { n.textContent = CRISE.note || ''; });
+  set('info-links', n => {
+    n.innerHTML = CRISE.liens.map(l => `<li><a href="${escapeHTML(l.url)}" target="_blank" rel="noopener">${escapeHTML(l.label)}${ico('ext')}</a></li>`).join('');
+  });
+  set('dz-pref', n => { n.href = CRISE.prefecture.url; n.textContent = CRISE.prefecture.label; });
+  set('forces-sub', n => { n.textContent = CRISE.forces; });
+}
+renderCrise();
+
+/* =====================================================================
+   BARRE D'ACTIONS MOBILE : réapparaît quand les deux grands boutons
+   sortent de l'écran (les actions restent toujours à portée de pouce)
+===================================================================== */
+(function initMobileBar() {
+  const bar = document.getElementById('mbar'), acts = document.getElementById('acts');
+  if (!bar || !acts) return;
+  bar.querySelectorAll('[data-proxy]').forEach(b => b.addEventListener('click', () => document.getElementById(b.dataset.proxy)?.click()));
+  if (!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(([e]) => {
+    const show = !e.isIntersecting;
+    bar.classList.toggle('on', show);
+    bar.setAttribute('aria-hidden', String(!show));
+    bar.querySelectorAll('button').forEach(b => b.tabIndex = show ? 0 : -1);
+  }).observe(acts);
+})();
 
 /* =====================================================================
    INIT — le fil est visible immédiatement (rendu local), la connexion

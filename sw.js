@@ -11,12 +11,12 @@
    script tiers, ni gêner la synchronisation en temps réel.
 ===================================================================== */
 
-const CACHE_NAME = 'uei-shell-v31';
+const CACHE_NAME = 'uei-shell-v35';
 const SHELL_FILES = [
   './',
   './index.html',
-  './app.js?v=29',
-  './style.css?v=8',
+  './app.js?v=31',
+  './style.css?v=12',
   './tailwind-built.css?v=11',
   './firebase-config.js?v=2',
   './manifest.json?v=2',

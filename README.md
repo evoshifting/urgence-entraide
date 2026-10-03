@@ -45,6 +45,18 @@ Puis ouvre `http://localhost:8000`.
 
 ---
 
+## 🔁 Réactiver le site pour une nouvelle crise (refonte d'octobre 2026)
+
+Tout le contexte affiché (pastille de crise, encart « Infos officielles », lien préfecture du bandeau danger, sous-titre du mur de soutien) se règle dans **un seul objet : `CRISE`, en haut de `app.js`**.
+
+- `actif: false` met le site en veille : pastille grise « Aucune crise en cours · le site reste prêt ».
+- `intitule`, `maj`, `titreInfo`, `resume`, `note`, `prefecture`, `liens`, `forces` : à remplacer par les informations de la nouvelle crise (incendie, inondation, tempête…).
+- Penser à incrémenter `?v=` de `app.js` dans `index.html` et dans `sw.js` (ainsi que `CACHE_NAME`), comme pour tout déploiement.
+
+La refonte garde l'esprit « bulletin citoyen » mais retire le bruit : un seul jeu d'icônes au trait (plus d'emojis dans l'interface), couleurs braise (besoin) et vert (offre) assombries pour passer les contrastes, deux grandes actions « J'ai besoin d'aide » / « Je propose de l'aide » (avec une barre d'actions qui reste accessible en bas d'écran sur mobile), annonces avec un bouton « Appeler [prénom] » mis en avant, textes au vouvoiement. Le bandeau défilant a été retiré.
+
+---
+
 ## ✏️ Personnalisation rapide
 
 - **Communes proposées** : tableau `COMMUNES` en haut de `app.js` + `<select id="f-commune">` dans `index.html`.
