@@ -45,6 +45,13 @@ Puis ouvre `http://localhost:8000`.
 
 ---
 
+## 🌐 Une seule adresse : la web app
+
+Le site n'est servi que par Firebase : **https://urgence-entraide-incendie.web.app** (`npx firebase-tools deploy --only hosting --project urgence-entraide-incendie`).
+L'ancienne adresse GitHub Pages (`evoshifting.com/urgence-entraide-incendie/`) est servie depuis la branche `gh-pages`, qui ne contient qu'une page de redirection vers la web app, en conservant les paramètres (`?a=` d'une annonce partagée, `?demo=1`). Les liens déjà partagés continuent donc de fonctionner. Pousser sur `main` ne publie plus rien sur GitHub Pages.
+
+---
+
 ## 📡 Vigilances en direct (relais Cloudflare)
 
 L'encart « Infos officielles » affiche l'état des crues **en direct**, sans mise à jour manuelle :
