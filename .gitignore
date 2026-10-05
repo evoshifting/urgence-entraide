@@ -1,2 +1,4 @@
 node_modules/
 .impeccable/
+.DS_Store
+.firebase/
