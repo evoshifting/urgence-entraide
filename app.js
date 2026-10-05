@@ -46,11 +46,12 @@ const CRISE = {
   resume: "Avant tout déplacement, vérifiez les vigilances officielles : l'état des crues s'affiche ci-dessus en direct, la carte météo est sur le site de Météo-France. En automne, les épisodes méditerranéens peuvent provoquer des crues soudaines.",
   note: "Crues : données Vigicrues actualisées automatiquement toutes les 15 minutes. Les liens renvoient vers les sites officiels, eux aussi mis à jour en continu.",
   flux: 'https://urgence-vigilance.evoshifting.workers.dev/', // relais Cloudflare (worker/ dans ce dépôt)
-  prefecture: { label: 'vigilance.meteofrance.fr', url: 'https://vigilance.meteofrance.fr/fr' },
+  prefecture: { label: 'les bons réflexes (Géorisques)', url: 'https://www.georisques.gouv.fr/me-preparer-me-proteger' },
   liens: [
     { label: 'Vigilance météo en direct (Météo-France)', url: 'https://vigilance.meteofrance.fr/fr' },
     { label: 'Vigilance crues en direct (Vigicrues)', url: 'https://www.vigicrues.gouv.fr/' },
     { label: 'Alertes sur votre téléphone (FR-Alert)', url: 'https://www.fr-alert.gouv.fr/' },
+    { label: 'Bons réflexes et kit d’urgence (Géorisques)', url: 'https://www.georisques.gouv.fr/me-preparer-me-proteger' },
     { label: 'Risques près de chez vous (Géorisques)', url: 'https://www.georisques.gouv.fr/' },
     { label: 'Routes et circulation (Bison Futé)', url: 'https://www.bison-fute.gouv.fr/' },
     { label: 'Catastrophe naturelle : indemnisation (Service-Public)', url: 'https://www.service-public.gouv.fr/particuliers/vosdroits/F3076' },
