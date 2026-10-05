@@ -56,6 +56,7 @@ const CRISE = {
   forces: 'Pompiers, aériens, soignants, État, forêt, citoyens — Gironde, juillet 2026.',
   nomPartage: 'Urgence Entraide Incendie', // préfixe des messages WhatsApp
   joursAVerifier: 14,                       // au-delà, l'annonce invite à vérifier qu'elle est toujours d'actualité
+  joursMax: 30,                             // au-delà, l'annonce est masquée (sauf pour son auteur, sur son appareil)
 };
 
 const STATUTS = {
@@ -795,8 +796,16 @@ function cardHTML(a) {
    RENDU DU FIL (recherche → facettes → tri → pagination)
 ===================================================================== */
 
+// Une annonce trop ancienne n'est plus montrée : hors crise, un fil vide vaut mieux
+// que des offres périmées. Son auteur la voit toujours, pour pouvoir la gérer.
+function isRecent(a) {
+  return getMineIds().has(a.id) || (Date.now() - (a.createdAt || 0)) <= CRISE.joursMax * 864e5;
+}
+
 function renderFeed() {
-  const all = readAll();
+  const everything = readAll();
+  const all = everything.filter(isRecent);
+  const hiddenOld = everything.length - all.length;
   renderStats(all);
 
   const searchFiltered = all.filter(a => matchesSearch(a, searchQuery));
@@ -830,6 +839,20 @@ function renderFeed() {
   if (result.length === 0) {
     feed.innerHTML = '';
     emptyState.classList.remove('hidden');
+    const t = emptyState.querySelector('.empty__t'), sub = emptyState.querySelector('.empty__s');
+    const filtering = searchQuery || filterType !== 'all' || filterCat !== 'all' || filterZone !== 'all' || hideResolved;
+    if (t && sub) {
+      if (!all.length && hiddenOld) {
+        t.textContent = 'Aucune annonce récente';
+        sub.textContent = `Les annonces de plus de ${CRISE.joursMax} jours sont masquées automatiquement. Besoin d'aide ou envie d'aider ? Publiez une annonce.`;
+      } else if (!filtering && !all.length) {
+        t.textContent = "Aucune annonce pour l'instant";
+        sub.textContent = "Besoin d'aide ou envie d'aider ? Publiez la première annonce.";
+      } else {
+        t.textContent = 'Aucune annonce ne correspond';
+        sub.textContent = 'Élargissez la recherche ou les filtres, ou publiez une annonce.';
+      }
+    }
     pagination.classList.add('hidden');
     return;
   }
