@@ -726,3 +726,43 @@ body.uei{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--f
 .lv--rouge{background:#FEE2E2;color:#7F1D1D}
 .live__src{margin:8px 0 0;font-size:12.5px;color:var(--ink-3)}
 .live__src a{color:var(--ink-2)}
+
+/* =====================================================================
+   IDENTITÉ MULTI-RISQUES (oct. 2026) : nom « Urgence Entraide »,
+   logo « Relais » (tools/logo.py), palette « Sécurité civile » :
+   bleu nuit = confiance, orange signal = besoin, bleu = offre.
+===================================================================== */
+:root{
+  --paper:#F4F6F9; --ink:#0B1B33; --ink-2:#334155; --ink-3:#5B6474; --line:#E1E5EC; --line-2:#CBD2DC;
+  --need:#C2410C; --need-600:#9A3412; --need-50:#FFF1E7; --need-100:#FED7AA;
+  --give:#1D4E89; --give-600:#173E6D; --give-50:#EAF1FA; --give-100:#C9DAF0;
+  --brand:#0B2545;
+}
+.hazard-stripe{background-image:repeating-linear-gradient(-45deg,#F97316 0 8px,#0B2545 8px 16px)}
+.dz{background:var(--brand)}
+#facet-type.segmented,.views{background:#E6EAF0}
+.info__k{color:var(--give)}
+.safety{background:#E9EDF3}
+.ad__stale{background:#EEF1F5}
+.ad__st{background:#E6EAF0}
+.empty{border-color:var(--line-2)}
+
+/* Logo « Relais » : le point s'allume, les ondes se tracent depuis lui, une onde de propagation part.
+   Une seule fois (chargement, survol, publication) ; jamais en boucle. */
+.uei-overlay-logo{display:block;margin:0 auto 16px}
+#header-logo-svg .mk-dot,#header-logo-svg .mk-ring,.uei-overlay-logo .mk-dot,.uei-overlay-logo .mk-ring{transform-box:fill-box;transform-origin:center}
+.mk-ring{vector-effect:non-scaling-stroke}
+.uei-anim .mk-dot{animation:mk-dot .42s cubic-bezier(.16,1,.3,1) both}
+.uei-anim .mk-w1{stroke-dasharray:1;animation:mk-draw .55s cubic-bezier(.16,1,.3,1) .14s both}
+.uei-anim .mk-w2{stroke-dasharray:1;animation:mk-draw .62s cubic-bezier(.16,1,.3,1) .3s both}
+.uei-anim .mk-ring{animation:mk-ring 1.05s cubic-bezier(.2,.7,.2,1) .62s both}
+.uei-overlay-logo.uei-anim .mk-ring{animation-iteration-count:2}
+@keyframes mk-dot{from{transform:scale(.35);opacity:0}60%{opacity:1}to{transform:scale(1);opacity:1}}
+@keyframes mk-draw{0%{stroke-dashoffset:1;opacity:0}12%{opacity:1}100%{stroke-dashoffset:0;opacity:1}}
+@keyframes mk-ring{0%{transform:scale(1);opacity:0}6%{opacity:.75}100%{transform:scale(5.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .uei-anim .mk-dot,.uei-anim .mk-w1,.uei-anim .mk-w2{animation:mk-fade .3s ease both;stroke-dasharray:none}
+  .uei-anim .mk-ring{animation:none}
+  @keyframes mk-fade{from{opacity:0}to{opacity:1}}
+}
+.demo-btn[hidden]{display:none}

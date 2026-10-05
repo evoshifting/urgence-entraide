@@ -30,26 +30,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Urgence Entraide — entraide citoyenne de proximité</title>
 <meta name="description" content="Mise en relation d'urgence entre sinistrés et personnes solidaires lors d'une crise (incendie, inondation, tempête) : logement, repas, matériel, transport.">
-<meta name="theme-color" content="#E14B10">
+<meta name="theme-color" content="#0B2545">
 
 <!-- Favicon / identité (voir logo.svg pour le SVG maître) -->
-<link rel="icon" href="favicon.ico?v=1" sizes="any">
-<link rel="icon" href="favicon.svg?v=1" type="image/svg+xml">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=1">
-<link rel="manifest" href="manifest.json?v=2">
+<link rel="icon" href="favicon.ico?v=2" sizes="any">
+<link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<link rel="manifest" href="manifest.json?v=3">
 
 <!-- Open Graph : aperçu du lien quand il est partagé (WhatsApp, etc.) -->
-<meta property="og:title" content="Urgence Entraide Incendie">
+<meta property="og:title" content="Urgence Entraide">
 <meta property="og:description" content="Entraide de proximité en cas de crise : demandez ou proposez de l'aide près de chez vous.">
-<meta property="og:image" content="https://urgence-entraide-incendie.web.app/og-image.png">
+<meta property="og:image" content="https://urgence-entraide-incendie.web.app/og-image.png?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://urgence-entraide-incendie.web.app/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Urgence Entraide Incendie">
+<meta property="og:site_name" content="Urgence Entraide">
 
 <link rel="stylesheet" href="tailwind-built.css?v=11">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=19">
 <script>
   // Filet de sécurité global : si une erreur JS fatale survient malgré tout,
   // on préfère avertir clairement plutôt que laisser un site silencieusement
@@ -123,35 +123,10 @@
   <aside class="side">
 
     <a href="./" aria-label="Accueil — Urgence Entraide" class="brand">
-      <svg id="header-logo-svg" width="44" height="44" viewBox="0 0 64 64" style="overflow:visible" class="brand__logo" aria-hidden="true">
-        <defs>
-          <linearGradient id="uei-tile-hdr" x1="10" y1="6" x2="54" y2="60" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#FF9D5C"/><stop offset=".52" stop-color="#F26D2B"/><stop offset="1" stop-color="#E14B10"/>
-          </linearGradient>
-          <linearGradient id="uei-sheen-hdr" x1="32" y1="4" x2="32" y2="34" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
-          </linearGradient>
-          <filter id="uei-shadow-hdr" x="-30%" y="-25%" width="160%" height="165%">
-            <feDropShadow dx="0" dy="2.5" stdDeviation="3.5" flood-color="#C63E08" flood-opacity=".26"/>
-          </filter>
-        </defs>
-        <g filter="url(#uei-shadow-hdr)">
-          <path fill="url(#uei-tile-hdr)" d="M22 4h20c8.5 0 12.8 0 15.4 2.6C60 9.2 60 13.5 60 22v20c0 8.5 0 12.8-2.6 15.4C54.8 60 50.5 60 42 60H22c-8.5 0-12.8 0-15.4-2.6C4 54.8 4 50.5 4 42V22c0-8.5 0-12.8 2.6-15.4C9.2 4 13.5 4 22 4Z"/>
-          <path fill="url(#uei-sheen-hdr)" d="M22 4h20c8.5 0 12.8 0 15.4 2.6C60 9.2 60 13.5 60 22v6H4v-6c0-8.5 0-12.8 2.6-15.4C9.2 4 13.5 4 22 4Z"/>
-        </g>
-        <g transform="translate(8 12) scale(2)" style="overflow:visible">
-          <circle class="uei-glow" cx="12" cy="12" r="10" fill="none" stroke="#FDBA74" stroke-width="1.4"/>
-          <g class="uei-flame">
-            <path fill="#fff" fill-rule="evenodd" clip-rule="evenodd" d="M12 2.3c3.4 3.5 5.6 6.6 5.6 10.4a5.6 5.6 0 0 1-11.2 0c0-1.6.5-3 1-4 .6 1.2 1.4 1.8 2.4 1.9-1.5-3.3.4-6.5 2.2-8.3Zm0 14.6c-2-1.5-3.4-2.8-3.4-4.4a1.75 1.75 0 0 1 3.4-.5 1.75 1.75 0 0 1 3.4.5c0 1.6-1.4 2.9-3.4 4.4Z"/>
-          </g>
-          <circle class="uei-ember e1" cx="10.5" cy="20" r=".7" fill="#FFD9A8"/>
-          <circle class="uei-ember e2" cx="13.5" cy="20" r=".5" fill="#FFD9A8"/>
-          <circle class="uei-ember e3" cx="12" cy="20" r=".6" fill="#FFD9A8"/>
-        </g>
-      </svg>
+      <svg id="header-logo-svg" class="brand__logo" width="44" height="44" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#0B2545"/><circle class="mk-ring" cx="32" cy="32" r="4.6" fill="none" stroke="#F97316" stroke-width="1.4" opacity="0"/><g fill="none" stroke-linecap="round" stroke-width="3.2"><g stroke="#FFFFFF"><path class="mk-w1" pathLength="1" d="M43.50 32 A11.5 11.5 0 0 0 40.81 24.61"/><path class="mk-w1" pathLength="1" d="M43.50 32 A11.5 11.5 0 0 1 40.81 39.39"/><path class="mk-w1" pathLength="1" d="M20.50 32 A11.5 11.5 0 0 1 23.19 24.61"/><path class="mk-w1" pathLength="1" d="M20.50 32 A11.5 11.5 0 0 0 23.19 39.39"/></g><g stroke="#7DD3FC"><path class="mk-w2" pathLength="1" d="M52.00 32 A20 20 0 0 0 47.32 19.14"/><path class="mk-w2" pathLength="1" d="M52.00 32 A20 20 0 0 1 47.32 44.86"/><path class="mk-w2" pathLength="1" d="M12.00 32 A20 20 0 0 1 16.68 19.14"/><path class="mk-w2" pathLength="1" d="M12.00 32 A20 20 0 0 0 16.68 44.86"/></g></g><circle class="mk-dot" cx="32" cy="32" r="4.6" fill="#F97316"/></svg>
       <span class="brand__txt">
         <span class="brand__name">Urgence Entraide</span>
-        <span class="brand__tag">Entraide citoyenne de proximité</span>
+        <span class="brand__tag">Entraide citoyenne en cas de crise</span>
       </span>
     </a>
 
@@ -499,7 +474,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 <script src="firebase-config.js?v=2"></script>
-<script src="app.js?v=38"></script>
+<script src="app.js?v=39"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
