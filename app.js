@@ -105,36 +105,37 @@ function saveLocalCache(items) {
 ===================================================================== */
 const DEMO_SEED = [
   // [type, catégorie, commune, quartier, lat, lon, description, prénom, il y a (heures), statut]
-  ['besoin', 'logement', 'La Teste-de-Buch 33260', 'Cazaux', 44.5367, -1.1514, "Évacués de Cazaux cette nuit avec nos deux enfants (4 et 9 ans). Nous cherchons un logement pour une semaine, même petit.", 'Julie', 2],
-  ['offre', 'chambre', 'Mérignac 33700', 'Capeyron', 44.8510, -0.6200, "Chambre d'amis libre avec salle d'eau, lit double. Accueil possible dès ce soir pour 1 à 2 personnes, sans limite de durée.", 'Philippe', 3],
-  ['besoin', 'transport', 'Biscarrosse 40600', 'Biscarrosse-Plage', 44.4475, -1.2500, "Ma mère de 82 ans doit rejoindre ma sœur à Bordeaux, elle ne conduit pas. Quelqu'un fait-il le trajet demain ?", 'Sandrine', 4],
-  ['offre', 'nourriture', 'Gujan-Mestras 33470', 'Port de Larros', 44.6356, -1.0711, "Restaurant fermé pendant les évacuations : nous préparons 40 repas chauds par jour pour les familles et les bénévoles, à emporter dès 12 h.", 'Karim', 5],
-  ['offre', 'accueil_jour', 'Arcachon 33120', 'Ville d\'Hiver', 44.6586, -1.1689, "Maison ouverte en journée : douche, machine à laver, recharge de téléphones, café. De 9 h à 19 h, sonnez au portail vert.", 'Hélène', 6],
-  ['besoin', 'materiel', 'Lège-Cap-Ferret 33950', 'Claouey', 44.7500, -1.1830, "Partis sans rien : besoin de vêtements pour un garçon de 6 ans (taille 116) et d'un chargeur USB-C.", 'Thomas', 7],
-  ['offre', 'logement', 'Pessac 33600', 'Saige', 44.7920, -0.6300, "Studio meublé vide jusqu'à fin septembre, rez-de-chaussée, accessible en fauteuil. Gratuit pour une personne ou un couple sinistré.", 'Nadia', 8],
-  ['offre', 'transport', 'Bordeaux 33000', 'Chartrons', 44.8550, -0.5700, "Je fais Bordeaux ⇄ bassin d'Arcachon tous les jours cette semaine, 3 places libres dans un monospace. Animaux acceptés.", 'Benoît', 9],
-  ['besoin', 'chambre', 'Sanguinet 40460', 'Bourg', 44.4836, -1.0750, "Infirmière en renfort à l'hôpital d'Arcachon, je cherche une chambre près du bassin pour 10 jours. Horaires de nuit.", 'Camille', 10],
-  ['offre', 'materiel', 'Talence 33400', 'Forum', 44.8090, -0.5890, "Trois lits de camp, des sacs de couchage et une dizaine de couvertures à donner. Je peux livrer dans la métropole.", 'Antoine', 12],
-  ['besoin', 'nourriture', 'Parentis-en-Born 40160', 'Centre', 44.3519, -1.0703, "Centre d'hébergement municipal : il manque des petits pots et du lait infantile 2e âge pour 6 bébés.", 'Mairie (Laure)', 13],
-  ['offre', 'chambre', 'Le Bouscat 33110', 'Barrière du Médoc', 44.8650, -0.5995, "Deux chambres à l'étage, jardin clos : idéal pour une famille avec un chien. Disponible tout le mois.", 'Isabelle', 15],
-  ['besoin', 'logement', 'Biscarrosse 40600', 'Navarrosse', 44.4300, -1.1600, "Couple de retraités, maison inaccessible pour plusieurs jours. Nous cherchons un hébergement de plain-pied, nous avons un petit chat.", 'Gérard', 18],
-  ['offre', 'accueil_jour', 'Andernos-les-Bains 33510', 'Centre', 44.7450, -1.1036, "Salle paroissiale ouverte aux évacués en journée : canapés, jeux pour enfants, Wi-Fi, boissons chaudes.", 'Père Michel', 20],
-  ['offre', 'nourriture', 'Libourne 33500', 'Bastide', 44.9150, -0.2436, "Épicerie solidaire : colis de produits frais et d'hygiène à retirer gratuitement, sur simple appel.", 'Fatima', 22],
-  ['besoin', 'autre', 'Mios 33380', 'Lacanau-de-Mios', 44.6053, -0.9361, "Nous devons faire garder deux chevaux évacués pendant une semaine. Pré ou box dans le secteur ?", 'Élodie', 26],
-  ['offre', 'logement', 'Cestas 33610', 'Réjouit', 44.7428, -0.6811, "Mobil-home équipé sur notre terrain, 4 couchages, eau et électricité. Pour une famille, aussi longtemps que nécessaire.", 'Stéphane', 30],
-  ['besoin', 'transport', 'Gujan-Mestras 33470', 'La Hume', 44.6420, -1.1120, "Besoin d'un véhicule pour déménager quelques meubles chez un proche à Mérignac, samedi matin.", 'Lucas', 34],
-  ['offre', 'transport', 'Saint-Médard-en-Jalles 33160', 'Hastignan', 44.8964, -0.7194, "Camionnette 12 m³ disponible avec chauffeur le week-end pour déménagements d'urgence.", 'Yannick', 40],
-  ['offre', 'materiel', 'Blanquefort 33290', 'Caychac', 44.9106, -0.6375, "Collecte de vêtements enfants 0-12 ans triés par taille, à venir chercher ou livrés sur le bassin.", 'Association Les Petits Pas', 46],
-  ['besoin', 'accueil_jour', 'Arcachon 33120', 'Aiguillon', 44.6600, -1.1500, "Je dors dans ma voiture depuis l'évacuation : un endroit pour prendre une douche et laver mon linge me rendrait service.", 'Marc', 52],
-  ['offre', 'chambre', 'Bègles 33130', 'Terres Neuves', 44.8086, -0.5478, "Chambre au calme dans un appartement, idéale pour un soignant ou un pompier en renfort.", 'Clara', 60, 'pause'],
-  ['besoin', 'materiel', 'La Teste-de-Buch 33260', 'Pyla-sur-Mer', 44.6200, -1.2000, "Recherche un fauteuil roulant pliant pour mon père, le sien est resté dans la maison évacuée.", 'Nathalie', 70],
-  ['offre', 'nourriture', 'Mérignac 33700', 'Arlac', 44.8300, -0.6300, "Je cuisine en grande quantité : plats végétariens et sans porc à récupérer chaque soir.", 'Samira', 80],
-  ['besoin', 'logement', 'Lège-Cap-Ferret 33950', 'Le Canon', 44.6900, -1.2400, "Famille de 5, maison détruite. Cherche location ou prêt de logement pour deux mois minimum.", 'Olivier', 96, 'pourvu'],
-  ['offre', 'logement', 'Bordeaux 33800', 'Saint-Jean', 44.8250, -0.5560, "Appartement T2 prêté gratuitement pendant mon absence, du 1er au 31 du mois.", 'Pauline', 120],
-  ['besoin', 'chambre', 'Mont-de-Marsan 40000', 'Saint-Médard', 43.8900, -0.5000, "Étudiante évacuée de Biscarrosse, je cherche une chambre près du campus pour la rentrée.", 'Inès', 200],
-  ['offre', 'accueil_jour', 'Talence 33400', 'Thouars', 44.7950, -0.5870, "Maison de quartier : aide aux démarches d'assurance et de relogement, mardi et jeudi après-midi.", 'Collectif Thouars', 380],
-  ['besoin', 'nourriture', 'Biscarrosse 40600', 'Bourg', 44.3942, -1.1636, "Banque alimentaire locale : besoin de bénévoles et de denrées non périssables.", 'Restos du Bourg (Paul)', 420],
-  ['offre', 'materiel', 'Pessac 33600', 'Cap de Bos', 44.8000, -0.6600, "Déshumidificateurs et nettoyeur haute pression à prêter pour remettre les maisons en état.", 'Hugo', 460, 'pourvu'],
+  // Situations types réparties sur la France et sur plusieurs risques (crue, tempête, canicule, grêle, tornade, incendie).
+  ['besoin', 'logement', 'Carcassonne 11000', 'La Trivalle', 43.2066, 2.3654, "Crue de l'Aude cette nuit : rez-de-chaussée inondé, nous cherchons un logement pour une semaine avec nos deux enfants (4 et 9 ans).", 'Julie', 2],
+  ['offre', 'chambre', 'Narbonne 11100', 'Saint-Jean-Saint-Pierre', 43.1841, 3.0040, "Chambre d'amis à l'étage, au sec, avec salle d'eau. Accueil possible dès ce soir pour 1 à 2 personnes sinistrées.", 'Philippe', 3],
+  ['besoin', 'transport', 'Montpellier 34000', 'Port Marianne', 43.6035, 3.8990, "Ma mère de 82 ans doit quitter son quartier inondé et rejoindre ma sœur à Nîmes. Quelqu'un fait-il le trajet demain ?", 'Sandrine', 4],
+  ['offre', 'nourriture', 'Béziers 34500', 'Centre', 43.3442, 3.2158, "Restaurant fermé pendant l'alerte : nous préparons 40 repas chauds par jour pour les familles évacuées et les bénévoles, à emporter dès 12 h.", 'Karim', 5],
+  ['offre', 'accueil_jour', 'Nîmes 30900', 'Jean-Jaurès', 43.8367, 4.3601, "Maison ouverte en journée pour les évacués : douche, machine à laver, recharge de téléphones, café. De 9 h à 19 h.", 'Hélène', 6],
+  ['besoin', 'materiel', 'Perpignan 66000', 'Saint-Gaudérique', 42.6887, 2.8948, "Logement inondé : besoin de bottes, de seaux, de serpillières et d'un aspirateur à eau pour vider la cave.", 'Thomas', 7],
+  ['offre', 'logement', 'Rennes 35000', 'Thabor', 48.1147, -1.6705, "Studio meublé libre jusqu'à fin novembre, rez-de-chaussée, accessible en fauteuil. Gratuit pour une personne ou un couple sinistré par la tempête.", 'Nadia', 8],
+  ['besoin', 'logement', 'Brest 29200', 'Recouvrance', 48.3864, -4.5012, "Toiture arrachée par la tempête, maison inhabitable. Famille de 4 avec un chien, nous cherchons un hébergement pour quelques jours.", 'Gwenaël', 9],
+  ['offre', 'materiel', 'Quimper 29000', 'Locmaria', 47.9906, -4.1020, "Bâches, sangles et tronçonneuse à prêter pour mettre les toitures hors d'eau après la tempête. Je peux aider à les poser.", 'Yann', 10],
+  ['besoin', 'chambre', 'Caen 14000', 'Vaucelles', 49.1765, -0.3562, "Infirmière en renfort à l'hôpital après la tempête, je cherche une chambre près du CHU pour 10 jours. Horaires de nuit.", 'Camille', 11],
+  ['offre', 'accueil_jour', 'Lyon 69003', 'Part-Dieu', 45.7605, 4.8566, "Canicule : salle climatisée ouverte aux personnes âgées et aux familles avec bébés, de 11 h à 20 h. Eau fraîche et transats.", 'Association Quartier Solidaire', 12],
+  ['besoin', 'autre', 'Villeurbanne 69100', 'Gratte-Ciel', 45.7676, 4.8796, "Mon voisin de 88 ans vit seul au 6e sans ascenseur ni climatisation. Quelqu'un peut-il passer le voir une fois par jour pendant la canicule ?", 'Inès', 13],
+  ['offre', 'transport', 'Paris 75011', 'Oberkampf', 48.8649, 2.3725, "Voiture climatisée disponible pour emmener des personnes fragiles vers un lieu frais ou un rendez-vous médical pendant l'épisode de canicule.", 'Benoît', 14],
+  ['offre', 'nourriture', 'Marseille 13005', 'La Conception', 43.2930, 5.3990, "Je cuisine en grande quantité : plats froids et boissons pour les personnes isolées pendant la canicule, livraison dans le 5e et le 6e.", 'Samira', 16],
+  ['besoin', 'materiel', 'Toulouse 31500', 'Jolimont', 43.6107, 1.4630, "Grêle hier soir : baies vitrées brisées et voiture inutilisable. Besoin de panneaux de bois ou de bâches pour fermer les ouvertures.", 'Lucas', 18],
+  ['offre', 'materiel', 'Montauban 82000', 'Villebourbon', 44.0159, 1.3473, "Plaques de contreplaqué et visseuse à donner pour protéger les fenêtres cassées par la grêle. Je peux livrer dans un rayon de 50 km.", 'Stéphane', 20],
+  ['besoin', 'transport', 'Bordeaux 33000', 'Chartrons', 44.8550, -0.5700, "Voiture détruite par la grêle, je dois rejoindre mon travail à Mérignac chaque matin cette semaine. Covoiturage possible ?", 'Élodie', 22],
+  ['offre', 'chambre', 'Nantes 44000', 'Île de Nantes', 47.2066, -1.5530, "Deux chambres à l'étage, jardin clos : idéal pour une famille avec un chien. Disponible tout le mois.", 'Isabelle', 26],
+  ['besoin', 'logement', 'Rouen 76000', 'Saint-Sever', 49.4320, 1.0790, "Crue de la Seine : immeuble évacué par précaution. Couple de retraités avec un chat, nous cherchons un hébergement de plain-pied.", 'Gérard', 30],
+  ['offre', 'logement', 'Amiens 80000', 'Saint-Leu', 49.8984, 2.3020, "Mobil-home équipé sur notre terrain, 4 couchages, eau et électricité. Pour une famille sinistrée, aussi longtemps que nécessaire.", 'Hugo', 34],
+  ['besoin', 'nourriture', 'Lille 59000', 'Fives', 50.6280, 3.0880, "Centre d'hébergement après la tornade de Bersée : il manque des petits pots et du lait infantile 2e âge pour 6 bébés.", 'Mairie (Laure)', 40],
+  ['offre', 'transport', 'Arras 62000', 'Centre', 50.2910, 2.7775, "Camionnette 12 m³ disponible avec chauffeur le week-end pour déménager les affaires des maisons touchées par la tornade.", 'Yannick', 46],
+  ['besoin', 'accueil_jour', 'Strasbourg 67000', 'Neudorf', 48.5660, 7.7650, "Coupure d'électricité depuis l'orage, je dors dans ma voiture : un endroit pour prendre une douche et recharger mon téléphone me rendrait service.", 'Marc', 52],
+  ['offre', 'chambre', 'Grenoble 38000', 'Île Verte', 45.1930, 5.7400, "Chambre au calme dans un appartement, idéale pour un soignant ou un pompier en renfort.", 'Clara', 60, 'pause'],
+  ['besoin', 'materiel', 'Toulon 83000', 'Le Mourillon', 43.1103, 5.9420, "Évacués à cause de l'incendie du massif : nous cherchons un fauteuil roulant pliant pour mon père, le sien est resté à la maison.", 'Nathalie', 70],
+  ['offre', 'nourriture', 'Avignon 84000', 'Intra-muros', 43.9493, 4.8055, "Épicerie solidaire : colis de produits frais et d'hygiène à retirer gratuitement, sur simple appel.", 'Fatima', 80],
+  ['besoin', 'logement', 'Ajaccio 20000', 'Les Cannes', 41.9300, 8.7400, "Maison endommagée par les pluies diluviennes. Famille de 5, cherche location ou prêt de logement pour deux mois.", 'Olivier', 96, 'pourvu'],
+  ['offre', 'logement', 'Clermont-Ferrand 63000', 'Jaude', 45.7772, 3.0870, "Appartement T2 prêté gratuitement pendant mon absence, du 1er au 31 du mois, pour un sinistré.", 'Pauline', 120],
+  ['offre', 'accueil_jour', 'Orléans 45000', 'Bourgogne', 47.9020, 1.9100, "Maison de quartier : aide aux déclarations d'assurance et aux démarches de catastrophe naturelle, mardi et jeudi après-midi.", 'Collectif Bourgogne', 300],
+  ['offre', 'materiel', 'Dijon 21000', 'Grésilles', 47.3340, 5.0610, "Déshumidificateurs et nettoyeur haute pression à prêter pour remettre les maisons en état après une inondation.", 'Antoine', 420, 'pourvu'],
 ];
 function buildDemoAnnonces() {
   const now = Date.now();
@@ -1020,9 +1021,9 @@ function renderMap(list) {
   const withCoords = list.filter(hasCoords);
   withCoords.forEach(a => {
     const cat = CATEGORIES[a.categorie] || { label: a.categorie, icon: '❔' };
-    const color = a.type === 'besoin' ? '#B93A0B' : '#1F6B45';
+    const color = a.type === 'besoin' ? '#C2410C' : '#1D4E89';
     const marker = L.circleMarker([a.lat, a.lon], {
-      radius: 9, color: '#111827', weight: 1.5, fillColor: color, fillOpacity: 0.9,
+      radius: 9, color: '#FFFFFF', weight: 2, fillColor: color, fillOpacity: 0.9,
     });
     marker.bindPopup(`
       <strong>${a.type === 'besoin' ? 'Besoin' : 'Offre'} · ${escapeHTML(cat.label)}</strong><br>
