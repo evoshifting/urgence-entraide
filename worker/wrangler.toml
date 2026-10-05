@@ -1,0 +1,6 @@
+# Relais « vigilances officielles » pour Urgence Entraide (Cloudflare Worker).
+# Déploiement : cd worker && npx wrangler deploy
+name = "urgence-vigilance"
+main = "index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true

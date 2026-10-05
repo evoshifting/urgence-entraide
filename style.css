@@ -708,3 +708,21 @@ body.uei{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--f
 .demo-banner__x{min-height:44px;padding:0 14px;border:0;border-radius:10px;background:#4A3906;color:#fff;font:700 14px var(--font);cursor:pointer}
 .ad__demo{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#FBF3DC;color:#5C4508;font-size:12px;font-weight:700}
 @media (max-width:420px){.feed-count{font-size:13px}.demo-btn{padding:0 10px}}
+
+/* Vigilances en direct (relais Vigicrues) */
+.live{margin:0 0 12px;padding:11px 12px;border-radius:10px;background:var(--paper);border:1px solid var(--line)}
+.live.hidden{display:none}
+.live[data-niveau="orange"]{background:#FFF4E5;border-color:#F5C98A}
+.live[data-niveau="rouge"]{background:#FDECEC;border-color:#F2B1B1}
+.live__h{display:flex;align-items:flex-start;gap:8px;margin:0;font-size:14px;line-height:1.45;color:var(--ink)}
+.live__dot{flex:none;width:9px;height:9px;margin-top:6px;border-radius:50%;background:#16A34A}
+.live__dot--jaune{background:#CA8A04}
+.live__dot--orange{background:#EA580C}
+.live__dot--rouge{background:#DC2626}
+.live__list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:5px;font-size:13.5px;color:var(--ink-2)}
+.lv{display:inline-block;min-width:54px;margin-right:6px;padding:1px 7px;border-radius:5px;font-size:12px;font-weight:700;text-align:center}
+.lv--jaune{background:#FEF3C7;color:#713F12}
+.lv--orange{background:#FFEDD5;color:#7C2D12}
+.lv--rouge{background:#FEE2E2;color:#7F1D1D}
+.live__src{margin:8px 0 0;font-size:12.5px;color:var(--ink-3)}
+.live__src a{color:var(--ink-2)}

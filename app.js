@@ -41,10 +41,11 @@ const ico = (name, cls = 'ic') => `<svg class="${cls}" aria-hidden="true"><use h
 const CRISE = {
   actif: true,
   intitule: 'France · vigilances officielles en direct',
-  maj: '05/10',
-  titreInfo: 'Aucune alerte rouge ou orange · vigilance jaune pluie-inondation dans le Sud-Est',
-  resume: "Au <strong>5 octobre 2026 (6 h)</strong>, Météo-France ne signale <strong>aucune vigilance rouge ou orange</strong> en France. Vigilance jaune <strong>pluie-inondation et orages</strong> : Aude, Hérault, Pyrénées-Orientales, Corse-du-Sud et Haute-Corse. En automne, les épisodes méditerranéens peuvent provoquer des crues soudaines : consultez les cartes en direct avant tout déplacement.",
-  note: "Résumé vérifié le 05/10/2026 sur vigilance.meteofrance.fr. Les liens ci-dessus sont mis à jour en continu par les services de l'État.",
+  maj: '',  // vide : l'heure affichée est celle du flux en direct (relais Vigicrues)
+  titreInfo: 'Vigilances officielles en direct',
+  resume: "Avant tout déplacement, vérifiez les vigilances officielles : l'état des crues s'affiche ci-dessus en direct, la carte météo est sur le site de Météo-France. En automne, les épisodes méditerranéens peuvent provoquer des crues soudaines.",
+  note: "Crues : données Vigicrues actualisées automatiquement toutes les 15 minutes. Les liens renvoient vers les sites officiels, eux aussi mis à jour en continu.",
+  flux: 'https://urgence-vigilance.evoshifting.workers.dev/', // relais Cloudflare (worker/ dans ce dépôt)
   prefecture: { label: 'vigilance.meteofrance.fr', url: 'https://vigilance.meteofrance.fr/fr' },
   liens: [
     { label: 'Vigilance météo en direct (Météo-France)', url: 'https://vigilance.meteofrance.fr/fr' },
@@ -2049,6 +2050,56 @@ function renderCrise() {
   document.title = CRISE.actif ? `Urgence Entraide — ${CRISE.intitule}` : 'Urgence Entraide — entraide citoyenne de proximité';
 }
 renderCrise();
+
+
+/* =====================================================================
+   VIGILANCES EN DIRECT : relais Cloudflare (dossier worker/) qui résume
+   Vigicrues toutes les 15 minutes. Sans réponse, l'encart garde ses liens.
+===================================================================== */
+async function renderVigilance() {
+  const box = document.getElementById('live-vigi');
+  if (!box || !CRISE.flux || typeof fetch !== 'function') return;
+  try {
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    const t = ctrl && setTimeout(() => ctrl.abort(), 6000);
+    const r = await fetch(CRISE.flux, ctrl ? { signal: ctrl.signal } : undefined);
+    if (t) clearTimeout(t);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    const c = d.crues;
+    if (!c || !c.ok) throw new Error('flux crues indisponible');
+    const heure = new Date(d.maj).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const liste = (noms, max = 5) => noms.slice(0, max).map(escapeHTML).join(', ') + (noms.length > max ? ` et ${noms.length - max} autre${noms.length - max > 1 ? 's' : ''}` : '');
+    const niveau = c.rouge.length ? 'rouge' : c.orange.length ? 'orange' : c.jaune.length ? 'jaune' : 'vert';
+    const lignes = [];
+    if (c.rouge.length) lignes.push(`<li><b class="lv lv--rouge">Rouge</b> ${liste(c.rouge)}</li>`);
+    if (c.orange.length) lignes.push(`<li><b class="lv lv--orange">Orange</b> ${liste(c.orange)}</li>`);
+    if (c.jaune.length) lignes.push(`<li><b class="lv lv--jaune">Jaune</b> ${liste(c.jaune)}</li>`);
+    box.innerHTML = `
+      <p class="live__h"><span class="live__dot live__dot--${niveau}" aria-hidden="true"></span>
+        <strong>Crues</strong> · ${niveau === 'vert'
+          ? `aucun cours d'eau en vigilance (${c.surveilles} tronçons surveillés)`
+          : `${c.rouge.length + c.orange.length + c.jaune.length} tronçon${c.rouge.length + c.orange.length + c.jaune.length > 1 ? 's' : ''} en vigilance sur ${c.surveilles}`}</p>
+      ${lignes.length ? `<ul class="live__list">${lignes.join('')}</ul>` : ''}
+      <p class="live__src">Mis à jour à ${heure} · source <a href="${escapeHTML(c.lien)}" target="_blank" rel="noopener">Vigicrues</a></p>`;
+    box.setAttribute('data-niveau', niveau);
+    box.classList.remove('hidden');
+    const majEl = document.getElementById('info-maj');
+    if (majEl) majEl.textContent = `· en direct, ${heure}`;
+    const titre = document.getElementById('info-title');
+    if (titre) titre.textContent = niveau === 'rouge' ? 'Vigilance crues rouge en cours'
+      : niveau === 'orange' ? 'Vigilance crues orange en cours' : CRISE.titreInfo;
+    if (niveau === 'rouge' || niveau === 'orange') {
+      const card = document.getElementById('info-card');
+      if (card) { card.setAttribute('data-open', 'true'); document.getElementById('info-toggle')?.setAttribute('aria-expanded', 'true'); }
+    }
+  } catch (e) {
+    box.classList.add('hidden'); // les liens officiels restent affichés
+    console.warn('[UEI] Vigilances en direct indisponibles', e);
+  }
+}
+renderVigilance();
+setInterval(renderVigilance, 15 * 60 * 1000);
 
 /* =====================================================================
    BARRE D'ACTIONS MOBILE : réapparaît quand les deux grands boutons

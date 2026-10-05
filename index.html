@@ -49,7 +49,7 @@
 <meta property="og:site_name" content="Urgence Entraide Incendie">
 
 <link rel="stylesheet" href="tailwind-built.css?v=11">
-<link rel="stylesheet" href="style.css?v=16">
+<link rel="stylesheet" href="style.css?v=17">
 <script>
   // Filet de sécurité global : si une erreur JS fatale survient malgré tout,
   // on préfère avertir clairement plutôt que laisser un site silencieusement
@@ -175,12 +175,13 @@
     <!-- Infos officielles : repliable -->
     <div id="info-card" class="info">
       <button id="info-toggle" type="button" class="info__head" aria-expanded="true" aria-controls="info-body">
-        <span class="info__k">Infos officielles <span id="info-maj">· mises à jour le 05/10</span></span>
-        <span class="info__t" id="info-title">Aucune alerte rouge ou orange · vigilance jaune pluie-inondation dans le Sud-Est</span>
+        <span class="info__k">Infos officielles <span id="info-maj"></span></span>
+        <span class="info__t" id="info-title">Vigilances officielles en direct</span>
         <span id="info-chevron" class="info__chev"><svg class="ic" aria-hidden="true"><use href="#i-chevron"/></svg></span>
       </button>
       <div id="info-body" class="info__body">
-        <p id="info-resume">Au <strong>5 octobre 2026 (6 h)</strong>, Météo-France ne signale <strong>aucune vigilance rouge ou orange</strong> en France. Vigilance jaune <strong>pluie-inondation et orages</strong> : Aude, Hérault, Pyrénées-Orientales, Corse-du-Sud et Haute-Corse. En automne, les épisodes méditerranéens peuvent provoquer des crues soudaines : consultez les cartes en direct avant tout déplacement.</p>
+        <div id="live-vigi" class="live hidden" aria-live="polite"></div>
+        <p id="info-resume">Avant tout déplacement, vérifiez les vigilances officielles : l'état des crues s'affiche ci-dessus en direct, la carte météo est sur le site de Météo-France. En automne, les épisodes méditerranéens peuvent provoquer des crues soudaines.</p>
         <ul class="info__links" id="info-links">
           <li><a href="https://vigilance.meteofrance.fr/fr" target="_blank" rel="noopener">Vigilance météo en direct (Météo-France)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
           <li><a href="https://www.vigicrues.gouv.fr/" target="_blank" rel="noopener">Vigilance crues en direct (Vigicrues)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
@@ -189,7 +190,7 @@
           <li><a href="https://www.bison-fute.gouv.fr/" target="_blank" rel="noopener">Routes et circulation (Bison Futé)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
           <li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F3076" target="_blank" rel="noopener">Catastrophe naturelle : indemnisation (Service-Public)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
         </ul>
-        <p class="info__note" id="info-note">Résumé vérifié le 05/10/2026 sur vigilance.meteofrance.fr. Les liens ci-dessus sont mis à jour en continu par les services de l'État.</p>
+        <p class="info__note" id="info-note">Crues : données Vigicrues actualisées automatiquement toutes les 15 minutes. Les liens renvoient vers les sites officiels, eux aussi mis à jour en continu.</p>
       </div>
     </div>
   </aside>
@@ -498,7 +499,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 <script src="firebase-config.js?v=2"></script>
-<script src="app.js?v=36"></script>
+<script src="app.js?v=37"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

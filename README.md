@@ -45,6 +45,18 @@ Puis ouvre `http://localhost:8000`.
 
 ---
 
+## 📡 Vigilances en direct (relais Cloudflare)
+
+L'encart « Infos officielles » affiche l'état des crues **en direct**, sans mise à jour manuelle :
+
+- `worker/` contient un Cloudflare Worker (`urgence-vigilance`, déployé sur `https://urgence-vigilance.evoshifting.workers.dev/`) qui interroge l'API publique **Vigicrues** (`vigicrues.gouv.fr/services/InfoVigiCru.geojson`, sans clé) et renvoie un résumé : tronçons surveillés et listes jaune / orange / rouge. Résultat gardé 15 minutes en cache.
+- Un relais est nécessaire : Vigicrues n'autorise pas la lecture directe depuis un autre site (pas d'en-tête CORS).
+- `app.js` (`renderVigilance`) l'appelle au chargement puis toutes les 15 minutes. En orange ou rouge, le titre de l'encart change et l'encart s'ouvre. Si le relais ne répond pas, l'encart garde simplement ses liens officiels.
+- Redéployer le relais : `cd worker && npx wrangler deploy`.
+- **Étape suivante possible** : ajouter la vigilance météo de Météo-France (API officielle gratuite avec clé, à créer sur portail-api.meteofrance.fr). La clé se range dans Cloudflare avec `npx wrangler secret put METEOFRANCE_KEY`, jamais dans le code.
+
+---
+
 ## 🔁 Réactiver le site pour une nouvelle crise (refonte d'octobre 2026)
 
 Tout le contexte affiché (pastille de crise, encart « Infos officielles », lien préfecture du bandeau danger, sous-titre du mur de soutien) se règle dans **un seul objet : `CRISE`, en haut de `app.js`**.
