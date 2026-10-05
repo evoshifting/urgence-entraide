@@ -28,8 +28,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Urgence Entraide Incendie — Biscarrosse / Cap-Ferret</title>
-<meta name="description" content="Mise en relation d'urgence entre victimes des incendies et personnes solidaires : logement, chambres, matériel. Partage instantané via WhatsApp.">
+<title>Urgence Entraide — entraide citoyenne de proximité</title>
+<meta name="description" content="Mise en relation d'urgence entre sinistrés et personnes solidaires lors d'une crise (incendie, inondation, tempête) : logement, repas, matériel, transport.">
 <meta name="theme-color" content="#E14B10">
 
 <!-- Favicon / identité (voir logo.svg pour le SVG maître) -->
@@ -40,7 +40,7 @@
 
 <!-- Open Graph : aperçu du lien quand il est partagé (WhatsApp, etc.) -->
 <meta property="og:title" content="Urgence Entraide Incendie">
-<meta property="og:description" content="Entraide de proximité pendant les incendies : demandez ou proposez de l'aide près de chez vous.">
+<meta property="og:description" content="Entraide de proximité en cas de crise : demandez ou proposez de l'aide près de chez vous.">
 <meta property="og:image" content="https://urgence-entraide-incendie.web.app/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -102,7 +102,7 @@
 <div class="dz" role="note">
   <div class="dz__in">
     <svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg>
-    <span><strong>Danger immédiat ?</strong> Appelez le <a href="tel:18">18</a> ou le <a href="tel:112">112</a>.<span class="dz__off"> Consignes officielles : <a id="dz-pref" href="https://www.gironde.gouv.fr/Actualites/Breves/Incendie-Centres-d-accueil" target="_blank" rel="noopener">gironde.gouv.fr</a></span></span>
+    <span><strong>Danger immédiat ?</strong> Appelez le <a href="tel:18">18</a> ou le <a href="tel:112">112</a>.<span class="dz__off"> Consignes officielles : <a id="dz-pref" href="https://vigilance.meteofrance.fr/fr" target="_blank" rel="noopener">vigilance.meteofrance.fr</a></span></span>
   </div>
   <div class="hazard-stripe dz__stripe" aria-hidden="true"></div>
 </div>
@@ -156,7 +156,7 @@
     </a>
 
     <!-- Crise en cours : renseignée par CRISE (app.js) -->
-    <p class="crise" id="crise-line"><span class="crise__dot" aria-hidden="true"></span><span id="crise-label">Incendies · Gironde &amp; Landes</span></p>
+    <p class="crise" id="crise-line"><span class="crise__dot" aria-hidden="true"></span><span id="crise-label">France · vigilances officielles en direct</span></p>
 
     <!-- Les deux actions, toujours en premier -->
     <div class="acts" id="acts">
@@ -175,20 +175,21 @@
     <!-- Infos officielles : repliable -->
     <div id="info-card" class="info">
       <button id="info-toggle" type="button" class="info__head" aria-expanded="true" aria-controls="info-body">
-        <span class="info__k">Infos officielles <span id="info-maj">· mises à jour le 27/07</span></span>
-        <span class="info__t" id="info-title">Centres d'accueil ouverts, certains déjà saturés</span>
+        <span class="info__k">Infos officielles <span id="info-maj">· mises à jour le 05/10</span></span>
+        <span class="info__t" id="info-title">Aucune alerte rouge ou orange · vigilance jaune pluie-inondation dans le Sud-Est</span>
         <span id="info-chevron" class="info__chev"><svg class="ic" aria-hidden="true"><use href="#i-chevron"/></svg></span>
       </button>
       <div id="info-body" class="info__body">
-        <p id="info-resume">Des centres d'accueil sont ouverts dans <strong>une douzaine de communes</strong> de Gironde et des Landes. <strong>Certains sont déjà saturés</strong> : vérifiez la liste à jour avant de vous y rendre. <strong>Les dons se déposent uniquement en mairie</strong>, jamais directement sur les sites d'accueil.</p>
+        <p id="info-resume">Au <strong>5 octobre 2026 (6 h)</strong>, Météo-France ne signale <strong>aucune vigilance rouge ou orange</strong> en France. Vigilance jaune <strong>pluie-inondation et orages</strong> : Aude, Hérault, Pyrénées-Orientales, Corse-du-Sud et Haute-Corse. En automne, les épisodes méditerranéens peuvent provoquer des crues soudaines : consultez les cartes en direct avant tout déplacement.</p>
         <ul class="info__links" id="info-links">
-          <li><a href="https://www.gironde.gouv.fr/Actualites/Breves/Incendie-Centres-d-accueil" target="_blank" rel="noopener">Liste des centres (préfecture)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
-          <li><a href="https://www.bordeaux-metropole.fr/actualites/incendies-en-gironde-accueil-personnes-evacuees" target="_blank" rel="noopener">Bordeaux Métropole<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
-          <li><a href="https://www.landes.gouv.fr/Actualites/Actualites/Incendie-en-cours-retour-des-habitants-dans-les-secteurs-mis-en-securite-de-Biscarrosse" target="_blank" rel="noopener">Retour à Biscarrosse<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
-          <li><a href="https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/incendies-et-feux-de-foret/" target="_blank" rel="noopener">Actualités en direct<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
-          <li><a href="https://intentanalytics.fr/feux/carte" target="_blank" rel="noopener">Carte des feux en direct<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+          <li><a href="https://vigilance.meteofrance.fr/fr" target="_blank" rel="noopener">Vigilance météo en direct (Météo-France)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+          <li><a href="https://www.vigicrues.gouv.fr/" target="_blank" rel="noopener">Vigilance crues en direct (Vigicrues)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+          <li><a href="https://www.fr-alert.gouv.fr/" target="_blank" rel="noopener">Alertes sur votre téléphone (FR-Alert)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+          <li><a href="https://www.georisques.gouv.fr/" target="_blank" rel="noopener">Risques près de chez vous (Géorisques)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+          <li><a href="https://www.bison-fute.gouv.fr/" target="_blank" rel="noopener">Routes et circulation (Bison Futé)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
+          <li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F3076" target="_blank" rel="noopener">Catastrophe naturelle : indemnisation (Service-Public)<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></li>
         </ul>
-        <p class="info__note" id="info-note">Résumé vérifié le 27/07/2026. La situation évolue vite : suivez les liens pour les dernières informations.</p>
+        <p class="info__note" id="info-note">Résumé vérifié le 05/10/2026 sur vigilance.meteofrance.fr. Les liens ci-dessus sont mis à jour en continu par les services de l'État.</p>
       </div>
     </div>
   </aside>
@@ -306,7 +307,7 @@
     <section class="forces">
       <div class="forces__head">
         <div class="forces__title">Merci à toutes les forces engagées</div>
-        <div class="forces__sub" id="forces-sub">Pompiers, aériens, soignants, État, forêt, citoyens — Gironde, juillet 2026.</div>
+        <div class="forces__sub" id="forces-sub">Pompiers, secouristes, soignants, agents de l'État et des communes, bénévoles : merci.</div>
       </div>
       <div class="fmarq"><div class="fmarq__track" id="forces-track"></div></div>
     </section>
@@ -497,7 +498,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 <script src="firebase-config.js?v=2"></script>
-<script src="app.js?v=35"></script>
+<script src="app.js?v=36"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

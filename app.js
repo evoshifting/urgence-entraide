@@ -40,23 +40,24 @@ const ico = (name, cls = 'ic') => `<svg class="${cls}" aria-hidden="true"><use h
 ===================================================================== */
 const CRISE = {
   actif: true,
-  intitule: 'Incendies · Gironde & Landes',
-  maj: '27/07',
-  titreInfo: "Centres d'accueil ouverts, certains déjà saturés",
-  resume: "Des centres d'accueil sont ouverts dans <strong>une douzaine de communes</strong> de Gironde et des Landes. <strong>Certains sont déjà saturés</strong> : vérifiez la liste à jour avant de vous y rendre. <strong>Les dons se déposent uniquement en mairie</strong>, jamais directement sur les sites d'accueil.",
-  note: 'Résumé vérifié le 27/07/2026. La situation évolue vite : suivez les liens pour les dernières informations.',
-  prefecture: { label: 'gironde.gouv.fr', url: 'https://www.gironde.gouv.fr/Actualites/Breves/Incendie-Centres-d-accueil' },
+  intitule: 'France · vigilances officielles en direct',
+  maj: '05/10',
+  titreInfo: 'Aucune alerte rouge ou orange · vigilance jaune pluie-inondation dans le Sud-Est',
+  resume: "Au <strong>5 octobre 2026 (6 h)</strong>, Météo-France ne signale <strong>aucune vigilance rouge ou orange</strong> en France. Vigilance jaune <strong>pluie-inondation et orages</strong> : Aude, Hérault, Pyrénées-Orientales, Corse-du-Sud et Haute-Corse. En automne, les épisodes méditerranéens peuvent provoquer des crues soudaines : consultez les cartes en direct avant tout déplacement.",
+  note: "Résumé vérifié le 05/10/2026 sur vigilance.meteofrance.fr. Les liens ci-dessus sont mis à jour en continu par les services de l'État.",
+  prefecture: { label: 'vigilance.meteofrance.fr', url: 'https://vigilance.meteofrance.fr/fr' },
   liens: [
-    { label: 'Liste des centres (préfecture)', url: 'https://www.gironde.gouv.fr/Actualites/Breves/Incendie-Centres-d-accueil' },
-    { label: 'Bordeaux Métropole', url: 'https://www.bordeaux-metropole.fr/actualites/incendies-en-gironde-accueil-personnes-evacuees' },
-    { label: 'Retour à Biscarrosse', url: 'https://www.landes.gouv.fr/Actualites/Actualites/Incendie-en-cours-retour-des-habitants-dans-les-secteurs-mis-en-securite-de-Biscarrosse' },
-    { label: 'Actualités en direct', url: 'https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/incendies-et-feux-de-foret/' },
-    { label: 'Carte des feux en direct', url: 'https://intentanalytics.fr/feux/carte' },
+    { label: 'Vigilance météo en direct (Météo-France)', url: 'https://vigilance.meteofrance.fr/fr' },
+    { label: 'Vigilance crues en direct (Vigicrues)', url: 'https://www.vigicrues.gouv.fr/' },
+    { label: 'Alertes sur votre téléphone (FR-Alert)', url: 'https://www.fr-alert.gouv.fr/' },
+    { label: 'Risques près de chez vous (Géorisques)', url: 'https://www.georisques.gouv.fr/' },
+    { label: 'Routes et circulation (Bison Futé)', url: 'https://www.bison-fute.gouv.fr/' },
+    { label: 'Catastrophe naturelle : indemnisation (Service-Public)', url: 'https://www.service-public.gouv.fr/particuliers/vosdroits/F3076' },
   ],
-  forces: 'Pompiers, aériens, soignants, État, forêt, citoyens — Gironde, juillet 2026.',
-  nomPartage: 'Urgence Entraide Incendie', // préfixe des messages WhatsApp
-  joursAVerifier: 14,                       // au-delà, l'annonce invite à vérifier qu'elle est toujours d'actualité
-  joursMax: 30,                             // au-delà, l'annonce est masquée (sauf pour son auteur, sur son appareil)
+  forces: "Pompiers, secouristes, soignants, agents de l'État et des communes, bénévoles : merci.",
+  nomPartage: 'Urgence Entraide', // préfixe des messages WhatsApp
+  joursAVerifier: 14,             // au-delà, l'annonce invite à vérifier qu'elle est toujours d'actualité
+  joursMax: 30,                   // au-delà, l'annonce est masquée (sauf pour son auteur, sur son appareil)
 };
 
 const STATUTS = {
@@ -989,8 +990,8 @@ sortSelect.addEventListener('change', () => {
 // Lacanau, au sud de Biscarrosse, à l'ouest et au sud de Bordeaux) — pas
 // seulement le Bassin d'Arcachon, pour ne pas paraître arbitrairement
 // zoomé sur un seul secteur au chargement initial.
-const DEFAULT_MAP_CENTER = [44.72, -1.0];
-const DEFAULT_MAP_ZOOM = 9;
+const DEFAULT_MAP_CENTER = [46.6, 2.4]; // France métropolitaine
+const DEFAULT_MAP_ZOOM = 6;
 let leafletLoadPromise = null;
 
 function ensureLeafletLoaded() {
@@ -1699,7 +1700,7 @@ function tryImportFromURL() {
 
 const FORCES = {
   "Sapeurs-pompiers & secours au sol": [
-    'Sapeurs-pompiers (SDIS 33)', 'Colonnes de renfort inter-départementales',
+    'Sapeurs-pompiers (SDIS)', 'Colonnes de renfort inter-départementales',
     'Sapeurs-pompiers volontaires', 'SAMU / SMUR', 'Protection civile', 'Croix-Rouge française',
   ],
   "Soignants & professionnels de santé": [
@@ -1713,10 +1714,10 @@ const FORCES = {
   ],
   "Forces de l'État & militaires": [
     'Sécurité civile', 'UIISC (ForMiSC)', 'Gendarmerie nationale', 'Police nationale & municipale',
-    'Préfecture de la Gironde', 'Armée & réservistes',
+    'Préfectures', 'Armée & réservistes',
   ],
   "Forêt, réseaux & environnement": [
-    'Office national des forêts (ONF)', 'DFCI Aquitaine', 'ENEDIS & techniciens réseaux',
+    'Office national des forêts (ONF)', 'Services techniques des communes', 'ENEDIS & techniciens réseaux',
     'Agriculteurs (citernes, tracteurs)', 'Vétérinaires & secours animaliers',
   ],
   "Solidarité citoyenne": [
