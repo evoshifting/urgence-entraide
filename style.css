@@ -691,3 +691,20 @@ body.uei{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--f
   .fpanel .fapply{display:block!important;text-align:center}
   .fpanel .fpanel__grip{display:block!important}
 }
+
+/* =====================================================================
+   MODE DÉMONSTRATION
+===================================================================== */
+.feed-left{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px}
+.demo-btn{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 12px;border:1px dashed var(--line-2);border-radius:11px;background:transparent;font:600 13.5px var(--font);color:var(--ink-2);cursor:pointer}
+.demo-btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.demo-btn .ic{width:16px;height:16px}
+.demo-btn[aria-pressed="true"]{border-style:solid;border-color:#7C5E10;background:#FBF3DC;color:#5C4508}
+.demo-btn--empty{margin-top:16px;border-style:solid;background:var(--card)}
+.demo-banner{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 12px;padding:12px 14px;border-radius:12px;background:#FBF3DC;border:1px solid #EBD9A6;color:#4A3906;font-size:14px;line-height:1.45}
+.demo-banner.hidden{display:none}
+.demo-banner .ic{width:18px;height:18px;color:#7C5E10}
+.demo-banner span{flex:1;min-width:200px}
+.demo-banner__x{min-height:44px;padding:0 14px;border:0;border-radius:10px;background:#4A3906;color:#fff;font:700 14px var(--font);cursor:pointer}
+.ad__demo{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#FBF3DC;color:#5C4508;font-size:12px;font-weight:700}
+@media (max-width:420px){.feed-count{font-size:13px}.demo-btn{padding:0 10px}}

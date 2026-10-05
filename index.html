@@ -49,7 +49,7 @@
 <meta property="og:site_name" content="Urgence Entraide Incendie">
 
 <link rel="stylesheet" href="tailwind-built.css?v=11">
-<link rel="stylesheet" href="style.css?v=15">
+<link rel="stylesheet" href="style.css?v=16">
 <script>
   // Filet de sécurité global : si une erreur JS fatale survient malgré tout,
   // on préfère avertir clairement plutôt que laisser un site silencieusement
@@ -92,6 +92,7 @@
   <symbol id="i-car" viewBox="0 0 24 24"><path d="M5 16h14M5 16v2.5M19 16v2.5M4.5 16l1.6-5.2A2 2 0 0 1 8 9.5h8a2 2 0 0 1 1.9 1.3L19.5 16"/><circle cx="8" cy="13.4" r=".6"/><circle cx="16" cy="13.4" r=".6"/></symbol>
   <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m10 8.5 5 3.5-5 3.5z"/></symbol>
   <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
   <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9M7 17H4.5V10a1 1 0 0 1 1-1h13a1 1 0 0 1 1 1v7H17"/><rect x="7" y="14" width="10" height="6.5"/></symbol>
@@ -256,11 +257,17 @@
 
     <!-- En-tête du fil : nombre de résultats + vue Liste / Carte -->
     <div class="feed-bar">
-      <span id="result-count" class="feed-count"></span>
+      <span class="feed-left"><span id="result-count" class="feed-count"></span><button id="btn-demo" type="button" class="demo-btn" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg><span>Voir une démo</span></button></span>
       <div class="views" role="group" aria-label="Affichage">
         <button id="btn-view-feed" data-active="true" class="view-toggle-btn" type="button"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Liste</button>
         <button id="btn-view-map" data-active="false" class="view-toggle-btn" type="button"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg>Carte</button>
       </div>
+    </div>
+
+    <div id="demo-banner" class="hidden demo-banner" role="status">
+      <svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>
+      <span><strong>Mode démonstration :</strong> 30 annonces fictives, affichées seulement sur cet appareil. Rien n'est publié ni partagé.</span>
+      <button id="btn-demo-exit" type="button" class="demo-banner__x">Quitter la démo</button>
     </div>
 
     <p class="safety"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Bons réflexes :</strong> ne versez jamais d'argent d'avance, donnez rendez-vous dans un lieu public si possible, et signalez toute annonce suspecte.</span></p>
@@ -274,6 +281,7 @@
     <div id="empty-state" class="hidden empty">
       <p class="empty__t">Aucune annonce ne correspond</p>
       <p class="empty__s">Élargissez la recherche ou les filtres, ou publiez la première annonce.</p>
+      <button id="btn-demo-empty" type="button" class="demo-btn demo-btn--empty"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg><span>Voir une démonstration avec 30 annonces</span></button>
     </div>
     <div id="pagination" class="hidden pager"></div>
   </main>
@@ -489,7 +497,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 <script src="firebase-config.js?v=2"></script>
-<script src="app.js?v=33"></script>
+<script src="app.js?v=35"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

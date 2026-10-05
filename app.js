@@ -92,7 +92,62 @@ function loadLocalCache() {
 function saveLocalCache(items) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch {}
 }
-function readAll() { return cache; }
+
+/* =====================================================================
+   MODE DÉMONSTRATION : 30 annonces fictives, uniquement dans ce navigateur.
+   Rien n'est écrit dans Firestore ; publication, partage WhatsApp et import
+   par lien sont désactivés tant que la démo est active. Numéros pris dans la
+   tranche 06 39 98 xx xx que l'ARCEP réserve aux œuvres de fiction.
+   Activation : bouton « Voir une démo » ou lien ?demo=1.
+===================================================================== */
+const DEMO_SEED = [
+  // [type, catégorie, commune, quartier, lat, lon, description, prénom, il y a (heures), statut]
+  ['besoin', 'logement', 'La Teste-de-Buch 33260', 'Cazaux', 44.5367, -1.1514, "Évacués de Cazaux cette nuit avec nos deux enfants (4 et 9 ans). Nous cherchons un logement pour une semaine, même petit.", 'Julie', 2],
+  ['offre', 'chambre', 'Mérignac 33700', 'Capeyron', 44.8510, -0.6200, "Chambre d'amis libre avec salle d'eau, lit double. Accueil possible dès ce soir pour 1 à 2 personnes, sans limite de durée.", 'Philippe', 3],
+  ['besoin', 'transport', 'Biscarrosse 40600', 'Biscarrosse-Plage', 44.4475, -1.2500, "Ma mère de 82 ans doit rejoindre ma sœur à Bordeaux, elle ne conduit pas. Quelqu'un fait-il le trajet demain ?", 'Sandrine', 4],
+  ['offre', 'nourriture', 'Gujan-Mestras 33470', 'Port de Larros', 44.6356, -1.0711, "Restaurant fermé pendant les évacuations : nous préparons 40 repas chauds par jour pour les familles et les bénévoles, à emporter dès 12 h.", 'Karim', 5],
+  ['offre', 'accueil_jour', 'Arcachon 33120', 'Ville d\'Hiver', 44.6586, -1.1689, "Maison ouverte en journée : douche, machine à laver, recharge de téléphones, café. De 9 h à 19 h, sonnez au portail vert.", 'Hélène', 6],
+  ['besoin', 'materiel', 'Lège-Cap-Ferret 33950', 'Claouey', 44.7500, -1.1830, "Partis sans rien : besoin de vêtements pour un garçon de 6 ans (taille 116) et d'un chargeur USB-C.", 'Thomas', 7],
+  ['offre', 'logement', 'Pessac 33600', 'Saige', 44.7920, -0.6300, "Studio meublé vide jusqu'à fin septembre, rez-de-chaussée, accessible en fauteuil. Gratuit pour une personne ou un couple sinistré.", 'Nadia', 8],
+  ['offre', 'transport', 'Bordeaux 33000', 'Chartrons', 44.8550, -0.5700, "Je fais Bordeaux ⇄ bassin d'Arcachon tous les jours cette semaine, 3 places libres dans un monospace. Animaux acceptés.", 'Benoît', 9],
+  ['besoin', 'chambre', 'Sanguinet 40460', 'Bourg', 44.4836, -1.0750, "Infirmière en renfort à l'hôpital d'Arcachon, je cherche une chambre près du bassin pour 10 jours. Horaires de nuit.", 'Camille', 10],
+  ['offre', 'materiel', 'Talence 33400', 'Forum', 44.8090, -0.5890, "Trois lits de camp, des sacs de couchage et une dizaine de couvertures à donner. Je peux livrer dans la métropole.", 'Antoine', 12],
+  ['besoin', 'nourriture', 'Parentis-en-Born 40160', 'Centre', 44.3519, -1.0703, "Centre d'hébergement municipal : il manque des petits pots et du lait infantile 2e âge pour 6 bébés.", 'Mairie (Laure)', 13],
+  ['offre', 'chambre', 'Le Bouscat 33110', 'Barrière du Médoc', 44.8650, -0.5995, "Deux chambres à l'étage, jardin clos : idéal pour une famille avec un chien. Disponible tout le mois.", 'Isabelle', 15],
+  ['besoin', 'logement', 'Biscarrosse 40600', 'Navarrosse', 44.4300, -1.1600, "Couple de retraités, maison inaccessible pour plusieurs jours. Nous cherchons un hébergement de plain-pied, nous avons un petit chat.", 'Gérard', 18],
+  ['offre', 'accueil_jour', 'Andernos-les-Bains 33510', 'Centre', 44.7450, -1.1036, "Salle paroissiale ouverte aux évacués en journée : canapés, jeux pour enfants, Wi-Fi, boissons chaudes.", 'Père Michel', 20],
+  ['offre', 'nourriture', 'Libourne 33500', 'Bastide', 44.9150, -0.2436, "Épicerie solidaire : colis de produits frais et d'hygiène à retirer gratuitement, sur simple appel.", 'Fatima', 22],
+  ['besoin', 'autre', 'Mios 33380', 'Lacanau-de-Mios', 44.6053, -0.9361, "Nous devons faire garder deux chevaux évacués pendant une semaine. Pré ou box dans le secteur ?", 'Élodie', 26],
+  ['offre', 'logement', 'Cestas 33610', 'Réjouit', 44.7428, -0.6811, "Mobil-home équipé sur notre terrain, 4 couchages, eau et électricité. Pour une famille, aussi longtemps que nécessaire.", 'Stéphane', 30],
+  ['besoin', 'transport', 'Gujan-Mestras 33470', 'La Hume', 44.6420, -1.1120, "Besoin d'un véhicule pour déménager quelques meubles chez un proche à Mérignac, samedi matin.", 'Lucas', 34],
+  ['offre', 'transport', 'Saint-Médard-en-Jalles 33160', 'Hastignan', 44.8964, -0.7194, "Camionnette 12 m³ disponible avec chauffeur le week-end pour déménagements d'urgence.", 'Yannick', 40],
+  ['offre', 'materiel', 'Blanquefort 33290', 'Caychac', 44.9106, -0.6375, "Collecte de vêtements enfants 0-12 ans triés par taille, à venir chercher ou livrés sur le bassin.", 'Association Les Petits Pas', 46],
+  ['besoin', 'accueil_jour', 'Arcachon 33120', 'Aiguillon', 44.6600, -1.1500, "Je dors dans ma voiture depuis l'évacuation : un endroit pour prendre une douche et laver mon linge me rendrait service.", 'Marc', 52],
+  ['offre', 'chambre', 'Bègles 33130', 'Terres Neuves', 44.8086, -0.5478, "Chambre au calme dans un appartement, idéale pour un soignant ou un pompier en renfort.", 'Clara', 60, 'pause'],
+  ['besoin', 'materiel', 'La Teste-de-Buch 33260', 'Pyla-sur-Mer', 44.6200, -1.2000, "Recherche un fauteuil roulant pliant pour mon père, le sien est resté dans la maison évacuée.", 'Nathalie', 70],
+  ['offre', 'nourriture', 'Mérignac 33700', 'Arlac', 44.8300, -0.6300, "Je cuisine en grande quantité : plats végétariens et sans porc à récupérer chaque soir.", 'Samira', 80],
+  ['besoin', 'logement', 'Lège-Cap-Ferret 33950', 'Le Canon', 44.6900, -1.2400, "Famille de 5, maison détruite. Cherche location ou prêt de logement pour deux mois minimum.", 'Olivier', 96, 'pourvu'],
+  ['offre', 'logement', 'Bordeaux 33800', 'Saint-Jean', 44.8250, -0.5560, "Appartement T2 prêté gratuitement pendant mon absence, du 1er au 31 du mois.", 'Pauline', 120],
+  ['besoin', 'chambre', 'Mont-de-Marsan 40000', 'Saint-Médard', 43.8900, -0.5000, "Étudiante évacuée de Biscarrosse, je cherche une chambre près du campus pour la rentrée.", 'Inès', 200],
+  ['offre', 'accueil_jour', 'Talence 33400', 'Thouars', 44.7950, -0.5870, "Maison de quartier : aide aux démarches d'assurance et de relogement, mardi et jeudi après-midi.", 'Collectif Thouars', 380],
+  ['besoin', 'nourriture', 'Biscarrosse 40600', 'Bourg', 44.3942, -1.1636, "Banque alimentaire locale : besoin de bénévoles et de denrées non périssables.", 'Restos du Bourg (Paul)', 420],
+  ['offre', 'materiel', 'Pessac 33600', 'Cap de Bos', 44.8000, -0.6600, "Déshumidificateurs et nettoyeur haute pression à prêter pour remettre les maisons en état.", 'Hugo', 460, 'pourvu'],
+];
+function buildDemoAnnonces() {
+  const now = Date.now();
+  return DEMO_SEED.map(([type, categorie, commune, quartier, lat, lon, description, contactPrenom, heures, statut], i) => ({
+    id: `demo-${i + 1}`, demo: true, type, categorie, commune, quartier, lat, lon, description, contactPrenom,
+    contactTel: `06 39 98 00 ${String(10 + i).padStart(2, '0')}`,
+    createdAt: now - heures * 3600e3, statut: statut || 'ouvert',
+  }));
+}
+let demoMode = (() => {
+  try { return new URLSearchParams(location.search).get('demo') === '1' || sessionStorage.getItem('uei_demo') === '1'; }
+  catch { return false; }
+})();
+let demoAnnonces = demoMode ? buildDemoAnnonces() : [];
+
+function readAll() { return demoMode ? demoAnnonces : cache; }
 
 function getMineIds() {
   try { return new Set(JSON.parse(localStorage.getItem(MINE_KEY)) || []); }
@@ -773,7 +828,7 @@ function cardHTML(a) {
   return `
   <article class="card-enter card-annonce ad ${isBesoin ? 'ad--need' : 'ad--give'} ${off ? 'ad--off card-annonce--inactive' : ''}">
     <div class="ad__top">
-      <span class="ad__type">${isBesoin ? 'Besoin' : 'Offre'}</span>
+      <span class="ad__type">${isBesoin ? 'Besoin' : 'Offre'}</span>${a.demo ? '<span class="ad__demo">Exemple</span>' : ''}
       <span class="ad__cat">${ico(cat.svg)}${escapeHTML(cat.label)}</span>
       ${statutBadge}
       <span class="ad__when">${timeAgo(a.createdAt)}${distLabel}</span>
@@ -783,9 +838,11 @@ function cardHTML(a) {
     ${stale ? `<p class="ad__stale">${ico('info')}<span>Publiée il y a plus de ${CRISE.joursAVerifier} jours : appelez pour vérifier qu'elle est toujours d'actualité.</span></p>` : ''}
     <div class="ad__acts">
       <a href="tel:${telClean}" class="ad__call">${ico('phone')}<span class="ad__callt">Appeler ${prenom}</span></a>
-      <a href="${whatsappLink(a)}" target="_blank" rel="noopener" class="ad__share">${ico('share')}<span>Partager</span></a>
+      ${a.demo
+        ? `<button type="button" class="ad__share" data-demo-off>${ico('share')}<span>Partager</span></button>`
+        : `<a href="${whatsappLink(a)}" target="_blank" rel="noopener" class="ad__share">${ico('share')}<span>Partager</span></a>`}
       <button data-copy="${escapeHTML(a.contactTel)}" class="btn-copy ad__icon" aria-label="Copier le numéro" title="Copier le numéro">${ico('copy')}</button>
-      <a class="ad__icon ad__report" href="mailto:contact@evoshifting.com?subject=${encodeURIComponent('Signalement annonce ' + a.id)}" aria-label="Signaler cette annonce" title="Signaler cette annonce">${ico('flag')}</a>
+      ${a.demo ? '' : `<a class="ad__icon ad__report" href="mailto:contact@evoshifting.com?subject=${encodeURIComponent('Signalement annonce ' + a.id)}" aria-label="Signaler cette annonce" title="Signaler cette annonce">${ico('flag')}</a>`}
       ${mine ? `<button data-delete="${a.id}" class="btn-delete ad__icon" aria-label="Supprimer mon annonce" title="Supprimer mon annonce">${ico('trash')}</button>` : ''}
     </div>
     ${statutButtons}
@@ -873,6 +930,7 @@ function renderFeed() {
 }
 
 feed.addEventListener('click', async (e) => {
+  if (e.target.closest('[data-demo-off]')) { showToast("Annonce d'exemple : le partage est désactivé en mode démo"); return; }
   const telLink = e.target.closest('a[href^="tel:"]');
   if (telLink) logEvent('appel_clique', {});
   const waLink = e.target.closest('a[href*="wa.me"]');
@@ -1415,6 +1473,11 @@ descriptionInput.addEventListener('input', () => {
 
 annonceForm.addEventListener('submit', (e) => {
   e.preventDefault();
+  if (demoMode) {
+    formError.textContent = "Mode démo : rien n'est publié. Quittez la démo pour publier une vraie annonce.";
+    formError.classList.remove('hidden');
+    return;
+  }
   const type = annonceForm.querySelector('input[name="type"]:checked')?.value;
   const categorie = el('f-categorie').value;
   const commune = communeHidden.value || communeInput.value.trim();
@@ -1593,6 +1656,7 @@ function buildShareLink(a) {
 }
 
 function tryImportFromURL() {
+  if (demoMode) return; // jamais d'import réel pendant la démo
   const params = new URLSearchParams(location.search);
   const raw = params.get('a');
   if (!raw) return;
@@ -1938,6 +2002,32 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.add('hidden'), 2200);
 }
+
+/* =====================================================================
+   MODE DÉMONSTRATION : bouton, bandeau, sortie
+===================================================================== */
+function setDemoMode(on) {
+  demoMode = on;
+  demoAnnonces = on ? buildDemoAnnonces() : [];
+  try { on ? sessionStorage.setItem('uei_demo', '1') : sessionStorage.removeItem('uei_demo'); } catch {}
+  if (!on && new URLSearchParams(location.search).get('demo') === '1') {
+    const u = new URL(location.href); u.searchParams.delete('demo'); history.replaceState(null, '', u);
+  }
+  filterType = 'all'; filterCat = 'all'; filterZone = 'all'; searchQuery = ''; currentPage = 1;
+  const sb = document.getElementById('search-box'); if (sb) sb.value = '';
+  renderDemoUI();
+  renderFeed();
+  showToast(on ? 'Mode démo : 30 annonces fictives' : 'Démo terminée : retour aux vraies annonces');
+}
+function renderDemoUI() {
+  const banner = document.getElementById('demo-banner'), btn = document.getElementById('btn-demo');
+  if (banner) banner.classList.toggle('hidden', !demoMode);
+  if (btn) btn.hidden = demoMode; // pendant la démo, la sortie se fait par le bandeau
+}
+document.getElementById('btn-demo')?.addEventListener('click', () => setDemoMode(!demoMode));
+document.getElementById('btn-demo-exit')?.addEventListener('click', () => setDemoMode(false));
+document.getElementById('btn-demo-empty')?.addEventListener('click', () => setDemoMode(true));
+renderDemoUI();
 
 /* =====================================================================
    CRISE EN COURS : affichage depuis l'objet CRISE (haut du fichier)
