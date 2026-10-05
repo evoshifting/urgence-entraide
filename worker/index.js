@@ -8,6 +8,8 @@
 const VIGICRUES = 'https://www.vigicrues.gouv.fr/services/InfoVigiCru.geojson';
 const CACHE_S = 900;
 const ORIGINES = [
+  'https://urgence-entraide.web.app',
+  'https://urgence-entraide.firebaseapp.com',
   'https://urgence-entraide-incendie.web.app',
   'https://urgence-entraide-incendie.firebaseapp.com',
   'https://evoshifting.com',
@@ -24,7 +26,7 @@ function cors(origin) {
 }
 
 async function crues() {
-  const r = await fetch(VIGICRUES, { cf: { cacheTtl: CACHE_S, cacheEverything: true }, headers: { 'User-Agent': 'UrgenceEntraide/1.0 (+https://urgence-entraide-incendie.web.app)' } });
+  const r = await fetch(VIGICRUES, { cf: { cacheTtl: CACHE_S, cacheEverything: true }, headers: { 'User-Agent': 'UrgenceEntraide/1.0 (+https://urgence-entraide.web.app)' } });
   if (!r.ok) throw new Error(`Vigicrues HTTP ${r.status}`);
   const geo = await r.json();
   const troncons = (geo.features || []).map(f => f.properties || {});

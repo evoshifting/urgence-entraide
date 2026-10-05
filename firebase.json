@@ -1,13 +1,14 @@
 {
-  "hosting": {
-    "site": "urgence-entraide-incendie",
-    "public": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**",
-      "package-lock.json",
-      "seed-soutien-equipe.html"
-    ]
-  }
+  "hosting": [
+    {
+      "site": "urgence-entraide",
+      "public": ".",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "package-lock.json", "seed-soutien-equipe.html", "redirect-ancien-site/**", "tools/**", "worker/**", "test.js"]
+    },
+    {
+      "site": "urgence-entraide-incendie",
+      "public": "redirect-ancien-site",
+      "headers": [{ "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }]
+    }
+  ]
 }

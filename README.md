@@ -45,10 +45,11 @@ Puis ouvre `http://localhost:8000`.
 
 ---
 
-## 🌐 Une seule adresse : la web app
+## 🌐 Une seule adresse : https://urgence-entraide.web.app
 
-Le site n'est servi que par Firebase : **https://urgence-entraide-incendie.web.app** (`npx firebase-tools deploy --only hosting --project urgence-entraide-incendie`).
-L'ancienne adresse GitHub Pages (`evoshifting.com/urgence-entraide-incendie/`) est servie depuis la branche `gh-pages`, qui ne contient qu'une page de redirection vers la web app, en conservant les paramètres (`?a=` d'une annonce partagée, `?demo=1`). Les liens déjà partagés continuent donc de fonctionner. Pousser sur `main` ne publie plus rien sur GitHub Pages.
+- Le site est servi par le site Firebase **`urgence-entraide`** (projet Firebase `urgence-entraide-incendie`, même base Firestore). Déploiement : `npx firebase-tools deploy --only hosting:urgence-entraide --project urgence-entraide-incendie`.
+- L'identifiant d'un projet Firebase ne peut pas être renommé : l'ancienne adresse **urgence-entraide-incendie.web.app** reste active, mais ne sert plus que le dossier `redirect-ancien-site/` (redirection qui conserve chemin, `?a=`, `?demo=1`) et un service worker de retrait qui efface l'ancienne version hors-ligne chez les visiteurs. Redéployer seulement si ce dossier change : `--only hosting:urgence-entraide-incendie`.
+- L'adresse GitHub Pages `evoshifting.com/urgence-entraide-incendie/` est servie depuis la branche `gh-pages` : une redirection vers la nouvelle adresse. Pousser sur `main` ne publie rien sur GitHub Pages.
 
 ---
 
