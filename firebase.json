@@ -1,0 +1,6 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "package-lock.json", "seed-soutien-equipe.html"]
+  }
+}
