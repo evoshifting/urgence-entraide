@@ -1,6 +1,13 @@
 {
   "hosting": {
+    "site": "urgence-entraide-incendie",
     "public": ".",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "package-lock.json", "seed-soutien-equipe.html"]
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "package-lock.json",
+      "seed-soutien-equipe.html"
+    ]
   }
 }
